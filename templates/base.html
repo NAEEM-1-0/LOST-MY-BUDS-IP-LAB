@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/base.html
+     বিবরণ: প্রধান মাস্টার লেআউট - হেডার, নেভিগেশন বার, সাইড কার্ট ড্রয়ার, 
+           কুইক ভিউ মডাল, মোবাইল অ্যাপ বার, নোটিফিকেশন টোস্ট এবং ফুটার।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="description" content="হারানো একটি ইয়ারবাড বা চার্জিং কেসের অরিজিনাল OEM রিপ্লেসমেন্ট পার্টস পেয়ে যান ওয়ারেন্টিসহ।">
+    
+    <!-- পেজের ডাইনামিক টাইটেল ব্লক -->
+    <title>{% block title %}BudsRecover — হারানো বাডের আসল রিপ্লেসমেন্ট হাব{% endblock %}</title>
+
+    <!-- গুগল ফন্টস (Hind Siliguri for Bengali + Inter for numbers & Latin + Space Grotesk) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- প্রধান সিএসএস ফাইল লিঙ্ক -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- ১. টপ অ্যানাউন্সমেন্ট বার (বিশ্বাসযোগ্যতা ও অফার ব্যানার) -->
+    <div class="announcement-bar" role="region" aria-label="Announcement">
+        <div class="announcement-content">
+            <span class="badge-pulse"></span>
+            <span>১০০% অরিজিনাল OEM পার্টস</span>
+            <span class="divider">•</span>
+            <span>৯০ দিনের রিপ্লেসমেন্ট ওয়ারেন্টি</span>
+            <span class="divider">•</span>
+            <span>সারা দেশে ক্যাশ অন ডেলিভারি</span>
+            <a href="{{ url_for('index') }}#finder" class="announcement-link">বাড খুঁজুন <span>→</span></a>
+        </div>
+    </div>
+
+    <!-- ২. প্রধান হেডার ও নেভিগেশন বার (Sticky Glassmorphism Header) -->
+    <header class="site-header" id="mainHeader">
+        <div class="header-container">
+            
+            <!-- ব্র্যান্ড লোগো ও হোমপেজ লিঙ্ক -->
+            <a href="{{ url_for('index') }}" class="brand-logo" aria-label="BudsRecover Home">
+                <div class="logo-icon">
+                    <!-- কাস্টম ইয়ারবাড ভেক্টর আইকন -->
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"></path>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-title">Buds<span class="accent-text">Recover</span></span>
+                    <span class="logo-tagline">Single Bud Replacement Hub</span>
+                </div>
+            </a>
+
+            <!-- ডেস্কটপ নেভিগেশন লিঙ্কসমূহ -->
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="{{ url_for('index') }}" class="nav-item">হোম</a>
+                <a href="{{ url_for('index') }}#finder" class="nav-item">বাড ফাইন্ডার</a>
+                <a href="{{ url_for('index') }}#shop" class="nav-item">সব পার্টস</a>
+                <a href="{{ url_for('authenticity') }}" class="nav-item">আসল যাচাই</a>
+                <a href="{{ url_for('track_order') }}" class="nav-item">ট্র্যাকিং</a>
+                <a href="{{ url_for('sell_your_bud') }}" class="nav-item">বাড বিক্রি</a>
+                <a href="{{ url_for('pairing_guide') }}" class="nav-item">পেয়ারিং গাইড</a>
+                <a href="{{ url_for('help_request') }}" class="nav-item">মডেল হেল্প</a>
+                <!-- IP LAB PHP MODULE BADGE LINK -->
+                <a href="http://127.0.0.1:8080" target="_blank" class="nav-item php-lab-nav-btn" style="background: linear-gradient(135deg, #4338ca, #2563eb); color: #ffffff !important; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 2px 6px rgba(37,99,235,0.3); display: inline-flex; align-items: center; gap: 4px;" title="Internet Programming Lab PHP Module">
+                    <span>⚡</span> IP Lab: PHP
+                </a>
+            </nav>
+
+            <!-- ডানপাশের অ্যাকশন বাটনসমূহ (সার্চ, থিম টগল, অ্যাকাউন্ট, কার্ট) -->
+            <div class="header-actions">
+                
+                <!-- =========================================================================
+                     📌 VIVA QUESTION: "হেডারের সার্চ বাটনটি কোথায় আছে এবং ক্লিক করলে কী হয়?"
+                     👉 ফাইল: templates/base.html (#mainHeader -> .header-actions)
+                     👉 অ্যাকশন: ক্লিক করলে হোমপেজের ক্যাটালগ সার্চ সেকশনে (#searchSection) স্মুথ স্ক্রল করে।
+                     ========================================================================= -->
+                <a href="{{ url_for('index') }}#searchSection" class="action-btn search-toggle-btn" aria-label="Search products" title="প্রোডাক্ট খুঁজুন">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </a>
+
+                <!-- =========================================================================
+                     📌 VIVA QUESTION: "ডার্ক / লাইট মোড টগল বাটনটি কোডে কোথায় আছে?"
+                     👉 ফাইল: templates/base.html (ID: themeToggleBtn)
+                     👉 জাভাস্ক্রিপ্ট ফাইল: static/store.js (Section 9: Theme Toggle Engine)
+                     👉 কাজ: document.body.classList.toggle('light-theme') কল করে এবং localStorage এ ব্রাউজারে থিম সেভ রাখে।
+                     ========================================================================= -->
+                <button type="button" class="action-btn theme-toggle-btn" id="themeToggleBtn" aria-label="থিম পরিবর্তন" title="ডার্ক ও লাইট মোড পরিবর্তন">
+                    <span class="theme-icon" id="themeIcon">🌙</span>
+                </button>
+
+                <!-- =========================================================================
+                     📌 VIVA QUESTION: "লগইন করা থাকলে ইউজারের নাম ও ড্রপডাউন কোথায় কোড করা?"
+                     👉 ফাইল: templates/base.html (ID: userMenuBtn, userDropdown)
+                     👉 ব্যাকএন্ড ভ্যারিয়েবল: session['name'] ও session['is_admin'] যা app.py এর inject_globals() থেকে আসে।
+                     ========================================================================= -->
+                {% if is_logged_in %}
+                    <div class="user-menu-wrapper">
+                        <!-- লগইন করা ইউজারের ড্রপডাউন ট্রিগার বাটন -->
+                        <button class="action-btn user-btn" id="userMenuBtn" aria-haspopup="true" aria-expanded="false" title="ইউজার মেনু">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span class="user-first-name">{{ user_name.split(' ')[0] }}</span>
+                        </button>
+                        
+                        <!-- ড্রপডাউন মেনু (অর্ডার, এডমিন প্যানেল ও সাইন আউট) -->
+                        <div class="user-dropdown-menu" id="userDropdown">
+                            <div class="dropdown-header">
+                                <strong>{{ user_name }}</strong>
+                                <small>কাস্টমার একাউন্ট</small>
+                            </div>
+                            <hr class="dropdown-divider">
+                            <!-- ইউজার অর্ডার হিস্ট্রি লিঙ্ক -> app.py এর my_orders() ফাংশন -->
+                            <a href="{{ url_for('my_orders') }}" class="dropdown-link">
+                                <span>📦</span> আমার অর্ডারসমূহ
+                            </a>
+                            {% if is_admin %}
+                                <!-- এডমিন ড্যাশবোর্ড লিঙ্ক -> app.py এর admin_dashboard() ফাংশন -->
+                                <a href="{{ url_for('admin_dashboard') }}" class="dropdown-link admin-highlight">
+                                    <span>⚡</span> এডমিন ড্যাশবোর্ড
+                                </a>
+                                <!-- এডমিন ট্রেড-ইন লিঙ্ক -> app.py এর admin_trade_ins() ফাংশন -->
+                                <a href="{{ url_for('admin_trade_ins') }}" class="dropdown-link">
+                                    <span>📥</span> বাড বিক্রি / ট্রেড-ইন
+                                </a>
+                            {% endif %}
+                            <hr class="dropdown-divider">
+                            <!-- লগআউট বাটন -> app.py এর logout() ফাংশন যা session.clear() করে -->
+                            <a href="{{ url_for('logout') }}" class="dropdown-link logout-link">
+                                <span>🚪</span> সাইন আউট
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- =========================================================================
+                         📌 SIR / VIVA QUESTION: "মেইন ইন্টারফেসে থাকা 'লগইন' বাটনটি কোডে কোথায় আছে?"
+                         👉 ফাইল: templates/base.html ফাইলের ৭৩-১৩৫ লাইনের মধ্যে (header-actions সেকশন)।
+                         👉 অ্যাকশন: ইউজার সাইন ইন না থাকলে এটি দৃশ্যমান হয়। ক্লিক করলে Flask এর url_for('login')
+                                    কল করে /login রাউটে রিডাইরেক্ট করে (app.py এর login() কন্ট্রোলার)।
+                         ========================================================================= -->
+                    <a href="{{ url_for('login') }}" class="action-btn sign-in-btn" id="headerLoginBtn">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                            <polyline points="10 17 15 12 10 7"></polyline>
+                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                        </svg>
+                        <span>লগইন</span>
+                    </a>
+                {% endif %}
+
+                <!-- =========================================================================
+                     📌 VIVA QUESTION: "হেডারের কার্ট/ব্যাগ বাটন চাপলে ড্রয়ার কীভাবে স্লাইড হয়ে খুলে?"
+                     👉 ফাইল: templates/base.html (ID: openCartBtn, headerCartCount)
+                     👉 জাভাস্ক্রিপ্ট: static/store.js এর openCart() ইভেন্ট লিসেনার সক্রিয় হয়।
+                     👉 ব্যাকএন্ড এপিআই: /api/cart/state থেকে লাইভ ডাটা এনে কার্ট ড্রয়ার রেন্ডার করে।
+                     ========================================================================= -->
+                <button class="cart-trigger-btn" id="openCartBtn" aria-label="কার্ট খুলুন" title="আপনার কার্ট দেখুন">
+                    <div class="cart-icon-box">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                        <!-- কার্টে থাকা মোট পণ্যের সংখ্যা নির্দেশক ব্যাজ -->
+                        <span class="cart-badge-count" id="headerCartCount">{{ cart_count }}</span>
+                    </div>
+                    <span class="cart-text">ব্যাগ</span>
+                </button>
+
+                <!-- মোবাইল হ্যামবার্গার মেনু বাটন -->
+                <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="মোবাইল মেনু খুলুন">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+            </div>
+        </div>
+
+        <!-- মোবাইল নেভিগেশন ড্রয়ার -->
+        <div class="mobile-nav-drawer" id="mobileNavDrawer">
+            <div class="mobile-nav-links">
+                <a href="{{ url_for('index') }}" class="mobile-nav-item">🏠 হোম</a>
+                <a href="{{ url_for('index') }}#finder" class="mobile-nav-item">🔍 বাড ফাইন্ডার</a>
+                <a href="{{ url_for('index') }}#shop" class="mobile-nav-item">🎧 সব পার্টস ক্যাটালগ</a>
+                <a href="{{ url_for('authenticity') }}" class="mobile-nav-item">🛡️ আসল পার্টস যাচাই</a>
+                <a href="{{ url_for('track_order') }}" class="mobile-nav-item">📦 লাইভ অর্ডার ট্র্যাকিং</a>
+                <a href="{{ url_for('sell_your_bud') }}" class="mobile-nav-item">💰 বাড বিক্রি / ট্রেড-ইন</a>
+                <a href="{{ url_for('pairing_guide') }}" class="mobile-nav-item">📖 পেয়ারিং নির্দেশিকা</a>
+                <a href="{{ url_for('help_request') }}" class="mobile-nav-item">💬 মডেল সহায়তা</a>
+                {% if is_logged_in %}
+                    <a href="{{ url_for('my_orders') }}" class="mobile-nav-item">📦 আমার অর্ডারসমূহ</a>
+                    {% if is_admin %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="mobile-nav-item admin-highlight">⚡ এডমিন ড্যাশবোর্ড</a>
+                        <a href="{{ url_for('admin_trade_ins') }}" class="mobile-nav-item">📥 ট্রেড-ইন রিকোয়েস্ট</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="mobile-nav-item logout-item">🚪 সাইন আউট ({{ user_name }})</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="mobile-nav-item login-item">🔑 সাইন ইন / রেজিস্ট্রেশন</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ৩. স্লাইড-আউট সাইড কার্ট ড্রয়ার (Modern Slide-Over Mini-Cart) -->
+    <!-- এটি পেজ রিফ্রেশ না করে ডানপাশ থেকে মসৃণভাবে স্লাইড হয়ে খুলে যায় -->
+    <div class="cart-drawer-backdrop" id="cartBackdrop"></div>
+    <aside class="cart-drawer" id="cartDrawer" aria-label="শপিং কার্ট ড্রয়ার">
+        <div class="cart-drawer-header">
+            <div class="drawer-title-box">
+                <h3>আপনার ব্যাগ</h3>
+                <span class="drawer-count-badge" id="drawerCartCount">{{ cart_count }} টি আইটেম</span>
+            </div>
+            <!-- কার্ট বন্ধ করার ক্লোজ বাটন -->
+            <button class="close-drawer-btn" id="closeCartBtn" aria-label="কার্ট বন্ধ করুন">
+                ✕
+            </button>
+        </div>
+
+        <!-- ফ্রি ডেলিভারি প্রগ্রেস বার -->
+        <div class="delivery-progress-box">
+            <div class="delivery-progress-text" id="freeDeliveryMessage">
+                <span>🚚</span> ৳৫,০০০ এর অর্ডারে ফ্রি ডেলিভারি!
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="deliveryProgressBar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- কার্টের ভেতরের আইটেম লিস্ট (AJAX দিয়ে রেন্ডার হবে) -->
+        <div class="cart-drawer-body" id="drawerCartItems">
+            <!-- জাভাস্ক্রিপ্ট স্বয়ংক্রিয়ভাবে এখানে আইটেম বসিয়ে দেবে -->
+            <div class="drawer-loading">
+                <div class="spinner"></div>
+                <p>ব্যাগ লোড হচ্ছে...</p>
+            </div>
+        </div>
+
+        <!-- কার্ট ড্রয়ারের ফুটার ও চেকআউট বাটন -->
+        <div class="cart-drawer-footer" id="drawerCartFooter">
+            <div class="drawer-subtotal-row">
+                <span>সাবটোটাল</span>
+                <strong id="drawerSubtotal">৳০</strong>
+            </div>
+            <p class="drawer-delivery-note">ক্যাশ অন ডেলিভারি ও সারাদেশে দ্রুত কুরিয়ার সুবিধা</p>
+            <div class="drawer-actions">
+                <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-block drawer-checkout-btn">
+                    চেকআউটে যান <span>→</span>
+                </a>
+                <a href="{{ url_for('cart') }}" class="btn btn-outline btn-block">
+                    বিস্তারিত ব্যাগ দেখুন
+                </a>
+            </div>
+        </div>
+    </aside>
+
+
+    <!-- ৪. কুইক ভিউ মডাল (Quick View Product Modal) -->
+    <!-- প্রোডাক্ট কার্ডের চোখ আইকনে ক্লিক করলে পেজ না ছেড়ে বিস্তারিত দেখার পপআপ -->
+    <div class="quickview-modal-backdrop" id="quickViewBackdrop"></div>
+    <div class="quickview-modal" id="quickViewModal" role="dialog" aria-modal="true">
+        <button class="close-modal-btn" id="closeQuickViewBtn" aria-label="মডাল বন্ধ করুন">✕</button>
+        <div class="modal-content-grid" id="quickViewContent">
+            <!-- ডাইনামিক প্রোডাক্ট ডাটা জাভাস্ক্রিপ্ট দিয়ে বসানো হবে -->
+        </div>
+    </div>
+
+
+    <!-- ৫. ফ্লোটিং টোস্ট নোটিফিকেশন কন্টেইনার (Toast Alerts) -->
+    <!-- কার্টে পণ্য যোগ হলে স্ক্রিনের নিচে সুন্দর টোস্ট অ্যালার্ট ভেসে উঠবে -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+
+    <!-- ৬. ফ্ল্যাশ মেসেজ ডিসপ্লে (সার্ভার সাইড সেশন অ্যালার্ট) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages-wrap">
+                {% for category, message in messages %}
+                    <div class="flash-alert alert-{{ category }}">
+                        <span>{{ message }}</span>
+                        <button class="close-flash" onclick="this.parentElement.remove()">✕</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- ৭. প্রধান পেজ কন্টেন্ট এরিয়া (Main Page Content Block) -->
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <!-- ৮. মোবাইল বটম অ্যাপ নেভিগেশন বার (Mobile App Bar) -->
+    <!-- মোবাইলে অ্যাপের মত নিচে ফিক্সড নেভিগেশন অপশন থাকবে -->
+    <div class="mobile-bottom-bar" aria-label="Mobile Navigation">
+        <a href="{{ url_for('index') }}" class="bottom-nav-item active">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            <span>হোম</span>
+        </a>
+        <a href="{{ url_for('index') }}#finder" class="bottom-nav-item">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>ফাইন্ডার</span>
+        </a>
+        <button class="bottom-nav-item mobile-cart-trigger" id="mobileBottomCartBtn">
+            <div class="bottom-cart-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                <span class="mobile-cart-badge" id="mobileCartCount">{{ cart_count }}</span>
+            </div>
+            <span>ব্যাগ</span>
+        </button>
+        {% if is_logged_in %}
+            <a href="{{ url_for('my_orders') }}" class="bottom-nav-item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>অর্ডারস</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="bottom-nav-item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                </svg>
+                <span>লগইন</span>
+            </a>
+        {% endif %}
+    </div>
+
+
+    <!-- ৯. প্রিমিয়াম ফুটার সেকশন (Professional Footer) -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                
+                <!-- কলাম ১: ব্র্যান্ড পরিচয় ও মিশন -->
+                <div class="footer-col brand-col">
+                    <div class="footer-brand">
+                        <div class="logo-icon small">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"></path>
+                            </svg>
+                        </div>
+                        <span class="logo-title">Buds<span class="accent-text">Recover</span></span>
+                    </div>
+                    <p class="footer-description">
+                        একটি বাড হারিয়ে গেলে পুরো ২৫ হাজার টাকার সেট ফেলে দেওয়ার দিন শেষ। আমরা দিচ্ছি ১০০% আসল OEM রিপ্লেসমেন্ট পার্টস, যাতে সাশ্রয় হয় আপনার কষ্টার্জিত টাকা ও পরিবেশের ই-বর্জ্য।
+                    </p>
+                    <div class="trust-pill-list">
+                        <span class="trust-pill">✓ ১০০% অরিজিনাল সার্টিফাইড</span>
+                        <span class="trust-pill">✓ ৯০ দিনের গ্যারান্টি</span>
+                    </div>
+                </div>
+
+                <!-- কলাম ২: জনপ্রিয় ব্র্যান্ড ক্যাটাগরি -->
+                <div class="footer-col">
+                    <h4>জনপ্রিয় ব্র্যান্ডসমূহ</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index', brand='Apple') }}#shop">Apple AirPods Pro / AirPods 3</a></li>
+                        <li><a href="{{ url_for('index', brand='Samsung') }}#shop">Samsung Galaxy Buds 2 Pro / FE</a></li>
+                        <li><a href="{{ url_for('index', brand='Sony') }}#shop">Sony WF-1000XM5 / XM4</a></li>
+                        <li><a href="{{ url_for('index', brand='Nothing') }}#shop">Nothing Ear (2) Replacement</a></li>
+                        <li><a href="{{ url_for('index', brand='OnePlus') }}#shop">OnePlus Buds Pro 2 / Nord</a></li>
+                    </ul>
+                </div>
+
+                <!-- কলাম ৩: পার্টসের ধরন ও গাইড -->
+                <div class="footer-col">
+                    <h4>রিপ্লেসমেন্ট ও ভেরিফিকেশন</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('authenticity') }}">🛡️ ১০০% আসল পার্টস যাচাই হাব</a></li>
+                        <li><a href="{{ url_for('track_order') }}">📦 লাইভ অর্ডার ট্র্যাকিং</a></li>
+                        <li><a href="{{ url_for('sell_your_bud') }}">💰 বাড বিক্রি ও ট্রেড-ইন</a></li>
+                        <li><a href="{{ url_for('index', category='Left Bud') }}#shop">লেফট ইয়ারবাড (Left Bud)</a></li>
+                        <li><a href="{{ url_for('index', category='Right Bud') }}#shop">রাইট ইয়ারবাড (Right Bud)</a></li>
+                        <li><a href="{{ url_for('index', category='Charging Case') }}#shop">চার্জিং কেস (Charging Case)</a></li>
+                        <li><a href="{{ url_for('pairing_guide') }}">সহজ পেয়ারিং নির্দেশিকা</a></li>
+                        <li><a href="{{ url_for('help_request') }}">মডেল ম্যাচিং সহায়তা</a></li>
+                    </ul>
+                </div>
+
+                <!-- কলাম ৪: কাস্টমার সাপোর্ট ও যোগাযোগ -->
+                <div class="footer-col">
+                    <h4>হেল্প ও সাপোর্ট</h4>
+                    <ul class="footer-links">
+                        <li><span>📍 ঢাকা, বাংলাদেশ</span></li>
+                        <li><span>📞 হটলাইন: +880 1700-000000</span></li>
+                        <li><span>✉️ সাপোর্ট: support@budsrecover.com</span></li>
+                        <li><span>🕒 সেবা সময়: প্রতিদিন সকাল ১০টা - রাত ১০টা</span></li>
+                    </ul>
+                    <div class="payment-badges-row">
+                        <span class="pay-badge cod-badge">ক্যাশ অন ডেলিভারি</span>
+                        <span class="pay-badge bkash-badge">বিকাশ</span>
+                        <span class="pay-badge nagad-badge">নগদ</span>
+                    </div>
+                </div>
+
+                <!-- কলাম ৫: IP Lab (Internet Programming) মডিউল -->
+                <div class="footer-col" style="background: rgba(30, 27, 75, 0.4); padding: 16px; border-radius: 10px; border: 1px solid #3730a3;">
+                    <h4 style="color: #818cf8;">🎓 IP Lab (PHP Module)</h4>
+                    <ul class="footer-links">
+                        <li><a href="http://127.0.0.1:8080" target="_blank">🏠 PHP পোর্টাল ড্যাশবোর্ড</a></li>
+                        <li><a href="http://127.0.0.1:8080/verify_serial.php" target="_blank">🔍 OEM সিরিয়াল ভেরিফায়ার</a></li>
+                        <li><a href="http://127.0.0.1:8080/warranty_claim.php" target="_blank">📋 ওয়ারেন্টি ক্লেইম ফর্ম</a></li>
+                        <li><a href="http://127.0.0.1:8080/invoice.php" target="_blank">🧾 ডায়নামিক ইনভয়েস ইঞ্জিন</a></li>
+                        <li><a href="http://127.0.0.1:8080/admin_portal.php" target="_blank">📊 PHP অ্যাডমিন প্যানেল</a></li>
+                        <li><a href="http://127.0.0.1:8080/api.php?action=stats" target="_blank">⚡ RESTful JSON API</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- ফুটার কপিরাইট ও প্রজেক্ট ক্রেডিট -->
+            <div class="footer-bottom">
+                <p>© ২০২৬ BudsRecover · গ্রুপ একাডেমিক প্রজেক্ট (SE & IP Lab) · সমস্ত স্বত্ব সংরক্ষিত।</p>
+                <p class="credit-tag">Designed with clean HTML5, CSS3, Vanilla JS, Python Flask, PHP 8 & SQLite (PDO).</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- সাইটের প্রধান জাভাস্ক্রিপ্ট ফাইল (স্টোর ইন্টারঅ্যাকশন, কার্ট ড্রয়ার, মোডাল, ইত্যাদি) -->
+    <script src="{{ url_for('static', filename='store.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

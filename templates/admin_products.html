@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/admin_products.html
+     বিবরণ: এডমিন ইনভেন্টরি পেজ - সমস্ত রিপ্লেসমেন্ট পার্টসের তালিকা, স্টক আপডেট ও ডিলিট।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}ইনভেন্টরি ম্যানেজমেন্ট — BudsRecover Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-wrap">
+    
+    <div class="admin-header-flex">
+        <div>
+            <a href="{{ url_for('admin_dashboard') }}" class="back-nav-link">← ড্যাশবোর্ডে ফিরে যান</a>
+            <h1 class="page-title">প্রোডাক্ট ইনভেন্টরি ({{ products|length }} টি পার্টস)</h1>
+        </div>
+        <div>
+            <!-- নতুন প্রোডাক্ট যোগ করার পেজে যাওয়ার বাটন -->
+            <a href="{{ url_for('admin_add_product') }}" class="btn btn-primary">
+                + নতুন পার্টস যুক্ত করুন
+            </a>
+        </div>
+    </div>
+
+    <!-- প্রোডাক্ট তালিকা টেবিল -->
+    <div class="dashboard-card full-width">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ছবি</th>
+                        <th>নাম ও মডেল</th>
+                        <th>ব্র্যান্ড</th>
+                        <th>পার্ট টাইপ</th>
+                        <th>মূল্য</th>
+                        <th>স্টক</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td>
+                            <img src="{{ p.image }}" alt="{{ p.name }}" class="admin-product-thumb" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                        </td>
+                        <td>
+                            <strong><a href="{{ url_for('product', pid=p.id) }}" target="_blank">{{ p.name }}</a></strong>
+                            <br><small class="text-muted">{{ p.model }}</small>
+                        </td>
+                        <td>{{ p.brand }}</td>
+                        <td><span class="badge part-badge {{ p.category|lower|replace(' ', '-') }}">{{ p.category }}</span></td>
+                        <td><strong>৳{{ '%.0f'|format(p.price) }}</strong></td>
+                        <td>
+                            {% if p.stock > 0 %}
+                            <span class="stock-pill in-stock mini">{{ p.stock }} টি</span>
+                            {% else %}
+                            <span class="stock-pill out-of-stock mini">স্টক আউট</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- প্রোডাক্ট ডিলিট করার ফর্ম -->
+                            <form method="POST" action="{{ url_for('admin_delete_product', pid=p.id) }}" onsubmit="return confirm('আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান?');" style="display:inline;">
+                                <button type="submit" class="btn-action-delete" title="ডিলিট করুন">
+                                    🗑️ মুছে ফেলুন
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

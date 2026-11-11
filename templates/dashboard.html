@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/dashboard.html
+     বিবরণ: এডমিন কন্ট্রোল ড্যাশবোর্ড - সামগ্রিক বিক্রয় রেভিনিউ, অর্ডারের সংখ্যা,
+           ইনভেন্টরি স্ট্যাটাস, কম স্টকের অ্যালার্ট ও কুইক অ্যাকশন বাটন।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}এডমিন ড্যাশবোর্ড — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="admin-page-wrap">
+    
+    <div class="admin-header-flex">
+        <div>
+            <span class="admin-badge">এডমিন কন্ট্রোল প্যানেল</span>
+            <h1 class="page-title">স্টোর ম্যানেজমেন্ট ওভারভিউ</h1>
+        </div>
+        <div class="admin-quick-links">
+            <a href="{{ url_for('admin_add_product') }}" class="btn btn-primary">
+                + নতুন পার্টস যুক্ত করুন
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="btn btn-secondary">
+                📦 সব অর্ডার দেখুন
+            </a>
+            <a href="{{ url_for('admin_trade_ins') }}" class="btn btn-primary" style="background:var(--accent-glow); border-color:var(--accent);">
+                📥 ট্রেড-ইন রিকোয়েস্ট
+            </a>
+            <a href="{{ url_for('admin_products') }}" class="btn btn-outline">
+                📋 ইনভেন্টরি ম্যানেজ
+            </a>
+        </div>
+    </div>
+
+    <!-- ৪টি প্রধান স্ট্যাটিস্টিক্স কার্ড গ্রিড -->
+    <div class="admin-stats-grid">
+        
+        <!-- মোট বিক্রয় রেভিনিউ -->
+        <div class="stat-card">
+            <div class="stat-icon-circle revenue-icon">💰</div>
+            <div class="stat-meta">
+                <span class="stat-label">মোট বিক্রয় রেভিনিউ</span>
+                <strong class="stat-value">৳{{ '%.0f'|format(total_revenue) }}</strong>
+                <small class="stat-hint">অর্ডার থেকে অর্জিত মোট টাকা</small>
+            </div>
+        </div>
+
+        <!-- মোট অর্ডার সংখ্যা -->
+        <div class="stat-card">
+            <div class="stat-icon-circle orders-icon">📦</div>
+            <div class="stat-meta">
+                <span class="stat-label">মোট অর্ডার সম্পন্ন</span>
+                <strong class="stat-value">{{ total_orders }}</strong>
+                <small class="stat-hint">সকল কাস্টমার অর্ডার</small>
+            </div>
+        </div>
+
+        <!-- মোট প্রোডাক্ট সংখ্যা -->
+        <div class="stat-card">
+            <div class="stat-icon-circle products-icon">🎧</div>
+            <div class="stat-meta">
+                <span class="stat-label">ক্যাটালগে সক্রিয় পার্টস</span>
+                <strong class="stat-value">{{ total_products }}</strong>
+                <small class="stat-hint">ইনভেন্টরিতে থাকা আইটেম</small>
+            </div>
+        </div>
+
+        <!-- পেন্ডিং সাপোর্ট রিকোয়েস্ট -->
+        <div class="stat-card">
+            <div class="stat-icon-circle support-icon">💬</div>
+            <div class="stat-meta">
+                <span class="stat-label">পেন্ডিং সাপোর্ট রিকোয়েস্ট</span>
+                <strong class="stat-value">{{ pending_support }}</strong>
+                <small class="stat-hint">গ্রাহকের অমীমাংসিত মেসেজ</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ড্যাশবোর্ডের প্রধান ডাটা গ্রিড (সাম্প্রতিক অর্ডার ও লো-স্টক অ্যালার্ট) -->
+    <div class="dashboard-tables-grid">
+        
+        <!-- বাম টেবিল: সাম্প্রতিক ৫টি অর্ডার -->
+        <div class="dashboard-card">
+            <div class="card-title-flex">
+                <h3>সাম্প্রতিক অর্ডারসমূহ</h3>
+                <a href="{{ url_for('admin_orders') }}" class="text-link">সবগুলো দেখুন →</a>
+            </div>
+
+            {% if recent_orders %}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>অর্ডার কোড</th>
+                            <th>কাস্টমার</th>
+                            <th>মূল্য</th>
+                            <th>স্ট্যাটাস</th>
+                            <th>তারিখ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ro in recent_orders %}
+                        <tr>
+                            <td><strong>{{ ro.order_code or ('#BR-' ~ ro.id) }}</strong></td>
+                            <td>{{ ro.customer_name }}<br><small>{{ ro.customer_phone }}</small></td>
+                            <td><strong>৳{{ '%.0f'|format(ro.total) }}</strong></td>
+                            <td>
+                                <span class="status-badge status-{{ ro.status|lower }} mini">
+                                    {{ ro.status }}
+                                </span>
+                            </td>
+                            <td><small>{{ ro.created_at[:10] }}</small></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="empty-table-note">এখনও কোনো অর্ডার পাওয়া যায়নি।</p>
+            {% endif %}
+        </div>
+
+        <!-- ডান টেবিল: কম স্টকের পার্টস অ্যালার্ট -->
+        <div class="dashboard-card">
+            <div class="card-title-flex">
+                <h3>⚠️ কম স্টক অ্যালার্ট (Stock < 5)</h3>
+                <a href="{{ url_for('admin_products') }}" class="text-link">ইনভেন্টরি →</a>
+            </div>
+
+            {% if low_stock %}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>পার্টস নাম</th>
+                            <th>ক্যাটাগরি</th>
+                            <th>অবশিষ্ট স্টক</th>
+                            <th>মূল্য</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ls in low_stock %}
+                        <tr>
+                            <td><strong>{{ ls.name }}</strong></td>
+                            <td>{{ ls.category }}</td>
+                            <td>
+                                <span class="stock-pill out-of-stock mini">
+                                    মাত্র {{ ls.stock }} টি
+                                </span>
+                            </td>
+                            <td>৳{{ '%.0f'|format(ls.price) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="empty-table-note">সকল পার্টসের পর্যাপ্ত স্টক বিদ্যমান রয়েছে।</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

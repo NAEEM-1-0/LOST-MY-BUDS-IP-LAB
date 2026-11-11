@@ -1,0 +1,646 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/authenticity.html
+     বিবরণ: ১০০% আসল OEM পার্টস যাচাইকরণ হাব ও লাইভ কিউআর কোড স্ক্যানার।
+           - ক্যামেরা ও ছবি আপলোড দিয়ে লাইভ QR কোড স্ক্যান করে আসল/নকল যাচাই।
+           - প্রেজেন্টেশন ও ভাইভার জন্য ১-ক্লিক ডেমো QR সিমুলেটর (আসল ও নকল বাডের টেস্ট)।
+           - ল্যাব টেস্টেড ডিজিটাল OEM সার্টিফিকেট ও ৯৮.৭% ANC কার্যকারিতা রিপোর্ট।
+           - আসল বনাম ক্লোন/নকল বাডের চেনার উপায় ও ৪-দফা পরীক্ষা।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}লাইভ QR কোড স্ক্যানার ও আসল OEM যাচাইকরণ — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="authenticity-page-wrap">
+    
+    <!-- ১. হিরো সেকশন: ১০০% আসল পার্টস গ্যারান্টি ব্যানার -->
+    <section class="auth-hero-section">
+        <div class="auth-hero-badge">
+            <span class="auth-shield-icon">🛡️</span>
+            <span>অরিজিনাল OEM ডিজিটাল ভেরিফিকেশন ল্যাব</span>
+        </div>
+        <h1 class="auth-hero-title">
+            QR কোড স্ক্যান করে <span class="gradient-text">আসল বাড যাচাই করুন</span>
+        </h1>
+        <p class="auth-hero-subtitle">
+            BudsRecover-এর প্রতিটি রিপ্লেসমেন্ট বাড ও কেস ল্যাব টেস্টের পর ইউনিক ট্রাস্টেড QR কোড ও ডিজিটাল সার্টিফিকেটের সাথে সরবরাহ করা হয়। আপনার পার্সেলের প্যাকেটের বা নিচে থাকা QR কোডটি সরাসরি স্ক্যান করে আসল ও নকল টেস্ট করুন।
+        </p>
+    </section>
+
+    <!-- ২. লাইভ কিউআর কোড স্ক্যানার ও ভেরিফিকেশন ইন্টারফেস (Live QR Scanner Hub) -->
+    <section class="qr-scanner-section">
+        <div class="qr-scanner-card">
+            
+            <div class="qr-scanner-header">
+                <div class="scanner-badge-pill">
+                    <span class="pulse-dot"></span> লাইভ ল্যাব ভেরিফায়ার
+                </div>
+                <h2>আসল/নকল যাচাইকরণ কিউআর স্ক্যানার</h2>
+                <p>ক্যামেরা দিয়ে পার্সেলের প্যাকেজিংয়ের QR কোড স্ক্যান করুন, ছবি আপলোড করুন অথবা নিচে ১-ক্লিক ডেমো বাটন ব্যবহার করুন।</p>
+            </div>
+
+            <!-- স্ক্যানার মোড সিলেকশন ট্যাব (ক্যামেরা / ছবি আপলোড / ডেমো টেস্ট) -->
+            <div class="scanner-tabs-row">
+                <button type="button" class="scanner-tab-btn active" id="tabCameraBtn" onclick="switchScannerTab('camera')">
+                    📷 ক্যামেরা স্ক্যান
+                </button>
+                <button type="button" class="scanner-tab-btn" id="tabUploadBtn" onclick="switchScannerTab('upload')">
+                    🖼️ QR ছবি আপলোড
+                </button>
+                <button type="button" class="scanner-tab-btn" id="tabDemoBtn" onclick="switchScannerTab('demo')">
+                    ⚡ ১-ক্লিক ডেমো টেস্ট
+                </button>
+            </div>
+
+            <!-- ট্যাব ১: লাইভ ক্যামেরা স্ক্যানার কনটেইনার -->
+            <div class="scanner-body-panel" id="cameraPanel">
+                <div class="camera-stream-wrapper">
+                    <div id="qrVideoContainer" class="qr-video-box">
+                        <div class="scanner-laser-line" id="laserLine" style="display:none;"></div>
+                        <div class="camera-placeholder" id="cameraPlaceholder">
+                            <span class="cam-icon">📷</span>
+                            <p>ক্যামেরা চালু করতে নিচের বাটনে চাপ দিন</p>
+                            <small class="text-muted">ল্যাপটপ বা মোবাইলের ক্যামেরা পারমিশন এলাও করুন</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- =========================================================================
+                     📌 VIVA QUESTION: "ক্যামেরা দিয়ে QR স্ক্যান করার কোডটি কোথায় আছে এবং কীভাবে কাজ করে?"
+                     👉 ফাইল: templates/authenticity.html (#startCameraBtn)
+                     👉 জাভাস্ক্রিপ্ট ফাংশন: startCameraScanner() যা html5-qrcode লাইব্রেরির মাধ্যমে
+                                           ক্যামেরা স্ট্রিম নিয়ে QR ডিকোড করে executeQrVerification(text) কল করে।
+                     👉 ব্যাকএন্ড এপিআই: app.py এর api_verify_qr() ফাংশন (/api/verify-qr)।
+                     ========================================================================= -->
+                <div class="scanner-controls-row">
+                    <!-- ক্যামেরা চালু করার বাটন -->
+                    <button type="button" class="btn btn-primary btn-large" id="startCameraBtn" onclick="startCameraScanner()">
+                        <span>📷 ক্যামেরা চালু করুন</span>
+                    </button>
+                    <!-- ক্যামেরা বন্ধ করার বাটন -->
+                    <button type="button" class="btn btn-outline" id="stopCameraBtn" onclick="stopCameraScanner()" style="display: none;">
+                        <span>⏹ ক্যামেরা বন্ধ করুন</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ট্যাব ২: ছবি আপলোড প্যানেল -->
+            <div class="scanner-body-panel" id="uploadPanel" style="display: none;">
+                <div class="upload-dropzone" onclick="document.getElementById('qrFileInput').click()">
+                    <span class="upload-icon">📁</span>
+                    <h4>QR কোডের ছবি বা স্ক্রিনশট সিলেক্ট করুন</h4>
+                    <p>PNG, JPG বা WebP ফরম্যাট সাপোর্টেড</p>
+                    <input type="file" id="qrFileInput" accept="image/*" style="display: none;" onchange="handleQrImageUpload(this)">
+                    <button type="button" class="btn btn-secondary btn-sm" style="margin-top: 10px;">ফাইল বাছাই করুন</button>
+                </div>
+            </div>
+
+            <!-- ট্যাব ৩: ১-ক্লিক ডেমো টেস্ট প্যানেল (ভাইভা ও প্রেজেন্টেশনের জন্য) -->
+            <div class="scanner-body-panel" id="demoPanel" style="display: none;">
+                <div class="demo-buttons-intro">
+                    <span>💡 শিক্ষক বা পরীক্ষকদের দেখানোর জন্য নিচের বাটনগুলোতে ক্লিক করে সাথে সাথে আসল ও নকল যাচাইয়ের ফলাফল দেখুন:</span>
+                </div>
+                <div class="demo-buttons-grid">
+                    <!-- ১. আসল অ্যাপল এয়ারপডস টেস্ট -->
+                    <button type="button" class="demo-test-card genuine" onclick="simulateVerification('OEM-CERT-APP-01')">
+                        <div class="demo-head">
+                            <span class="tag-status">✓ আসল OEM</span>
+                            <span class="demo-icon">🍏</span>
+                        </div>
+                        <strong>Apple AirPods Pro 2 (Left)</strong>
+                        <small>কোড: OEM-CERT-APP-01</small>
+                        <div class="demo-btn-action">টেস্ট করুন ➔</div>
+                    </button>
+
+                    <!-- ২. আসল স্যামসাং বাডস টেস্ট -->
+                    <button type="button" class="demo-test-card genuine" onclick="simulateVerification('OEM-CERT-SAM-07')">
+                        <div class="demo-head">
+                            <span class="tag-status">✓ আসল OEM</span>
+                            <span class="demo-icon">🪐</span>
+                        </div>
+                        <strong>Samsung Galaxy Buds 2 Pro (Right)</strong>
+                        <small>কোড: OEM-CERT-SAM-07</small>
+                        <div class="demo-btn-action">টেস্ট করুন ➔</div>
+                    </button>
+
+                    <!-- ৩. আসল সনি বাডস টেস্ট -->
+                    <button type="button" class="demo-test-card genuine" onclick="simulateVerification('OEM-CERT-SON-12')">
+                        <div class="demo-head">
+                            <span class="tag-status">✓ আসল OEM</span>
+                            <span class="demo-icon">🎧</span>
+                        </div>
+                        <strong>Sony WF-1000XM5 (Charging Case)</strong>
+                        <small>কোড: OEM-CERT-SON-12</small>
+                        <div class="demo-btn-action">টেস্ট করুন ➔</div>
+                    </button>
+
+                    <!-- ৪. নকল / মাস্টার কপি টেস্ট (Fake Alert Trigger) -->
+                    <button type="button" class="demo-test-card fake" onclick="simulateVerification('FAKE-CLONE-AIRPODS-COPY-X9')">
+                        <div class="demo-head">
+                            <span class="tag-status tag-fake">⚠️ নকল ক্লোন বাড</span>
+                            <span class="demo-icon">🚫</span>
+                        </div>
+                        <strong>বাজারের সস্তা ক্লোন বা মাস্টার কপি</strong>
+                        <small>কোড: FAKE-CLONE-COPY-X9</small>
+                        <div class="demo-btn-action fake-action">নকল টেস্ট করুন ➔</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- স্ক্যানিং ও ভেরিফিকেশন রেজাল্ট কন্টেইনার (AJAX রেসপন্স এখানে লোড হবে) -->
+            <div id="qrResultContainer" class="qr-result-container" style="display: none;">
+                <!-- জাভাস্ক্রিপ্ট ডাইনামিকভাবে সার্টিফিকেট বা এরর কার্ড রেন্ডার করবে -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ৩. ইন্টারঅ্যাক্টিভ মডেল ও সিরিয়াল কোড চেকার টুল -->
+    <section class="auth-checker-section">
+        <div class="auth-checker-card">
+            <div class="checker-header">
+                <div class="checker-icon">🔍</div>
+                <div>
+                    <h2>মডেল ও কম্প্যাটিবিলিটি কোড ভ্যালিডেটর</h2>
+                    <p>আপনার চার্জিং কেসের ভেতরের ঢাকনায় বা ব্লুটুথ সেটিংসে থাকা মডেল কোডটি এখানে দিন</p>
+                </div>
+            </div>
+
+            <!-- সার্চ/ভ্যালিডেশন ফর্ম -->
+            <form id="modelCheckerForm" class="checker-form" onsubmit="handleModelCheck(event)">
+                <div class="checker-input-group">
+                    <label for="modelCodeInput" class="sr-only">মডেল কোড</label>
+                    <input 
+                        type="text" 
+                        id="modelCodeInput" 
+                        name="code" 
+                        placeholder="যেমন: A2698, SM-R510, WF-1000XM5, B157..." 
+                        required 
+                        autocomplete="off"
+                    >
+                    <!-- ভ্যালিডেট বাটন: ক্লিক করলে /api/check-model এ ফেচ রিকোয়েস্ট পাঠাবে -->
+                    <button type="submit" class="btn btn-primary" id="checkModelBtn">
+                        <span>আসল পার্ট খুঁজুন ➔</span>
+                    </button>
+                </div>
+                <!-- দ্রুত ট্রাই করার কুইক চিপস -->
+                <div class="checker-quick-tags">
+                    <span>জনপ্রিয় কোড ট্রাই করুন:</span>
+                    <button type="button" class="quick-code-pill" onclick="fillAndCheck('A2698')">A2698 (AirPods Pro 2)</button>
+                    <button type="button" class="quick-code-pill" onclick="fillAndCheck('SM-R510')">SM-R510 (Galaxy Buds 2 Pro)</button>
+                    <button type="button" class="quick-code-pill" onclick="fillAndCheck('WF-1000XM5')">Sony WF-1000XM5</button>
+                    <button type="button" class="quick-code-pill" onclick="fillAndCheck('B157')">B157 (Nothing Ear 2)</button>
+                </div>
+            </form>
+
+            <!-- রেজাল্ট কন্টেইনার -->
+            <div id="checkerResultArea" class="checker-result-area" style="display: none;"></div>
+        </div>
+    </section>
+
+    <!-- ৪. ৪-দফা অথেন্টিসিটি টেস্টিং গাইড (The 4-Step Verification Guide) -->
+    <section class="auth-tests-grid-section">
+        <div class="section-title-wrap">
+            <span class="section-subtitle">ল্যাব টেস্টেড আসল চেনার উপায়</span>
+            <h2 class="section-title">ঘরে বসেই যাচাইয়ের ৪টি বৈজ্ঞানিক পদ্ধতি</h2>
+        </div>
+
+        <div class="auth-cards-grid">
+            
+            <!-- পরীক্ষা ১: ওএস সিস্টেম ও ফার্মওয়্যার আপডেট টেস্ট -->
+            <div class="auth-card">
+                <div class="auth-card-num">০১</div>
+                <div class="auth-card-icon">📱</div>
+                <h3>আইওএস ও অ্যান্ড্রয়েড নেটিভ সিস্টেম ডিটেকশন</h3>
+                <p>
+                    নকল বা ক্লোন বাড কখনো অফিসিয়াল ওটিএ (OTA) ফার্মওয়্যার আপডেট নিতে পারে না। 
+                    <strong>Apple iOS:</strong> আসল AirPods হলে Settings > Bluetooth > 'i' আইকনে ক্লিক করলে স্বয়ংক্রিয়ভাবে সিরিয়াল নম্বর, মডেল নম্বর এবং ফার্মওয়্যার ভার্সন শো করবে এবং Apple Care কভারেজ দেখাবে।
+                </p>
+                <div class="auth-pass-pill">✓ ১০০% সফটওয়্যার আপডেট সাপোর্টেড</div>
+            </div>
+
+            <!-- পরীক্ষা ২: ফাইন্ড মাই ও স্মার্ট-থিংস ট্র্যাকিং -->
+            <div class="auth-card">
+                <div class="auth-card-num">০২</div>
+                <div class="auth-card-icon">📍</div>
+                <h3>Apple Find My ও Samsung SmartThings ফাইন্ড</h3>
+                <p>
+                    আমাদের প্রতিস্থাপিত প্রতিটি বাডে অরিজিনাল আল্ট্রা-ওয়াইডব্যান্ড বা বিএলই চিপ থাকে। হারিয়ে যাওয়া পার্টটি সংযুক্ত করার সাথে সাথেই আপনার ডিভাইসের অফিসিয়াল <strong>Find My</strong> অ্যাপ্লিকেশনে লাইভ ম্যাপ ট্র্যাকিং এবং স্পিকার বিপ সাউন্ড কাজ করবে।
+                </p>
+                <div class="auth-pass-pill">✓ প্রিসিশন ফাইন্ডিং ও জিপিএস কাজ করবে</div>
+            </div>
+
+            <!-- পরীক্ষা ৩: লেজার এনগ্রেভড সিরিয়াল ও ভেন্ট ডিজাইন -->
+            <div class="auth-card">
+                <div class="auth-card-num">০৩</div>
+                <div class="auth-card-icon">🔍</div>
+                <h3>লেজার এনগ্রেভড মাইক্রো কোড ও মেটাল মেশ</h3>
+                <p>
+                    প্রতিটি অরিজিনাল ইয়ারবাডের নিচে অত্যন্ত সূক্ষ্ম লেজার দিয়ে মডেল কোড খোদাই করা থাকে। তাছাড়া নকল বাডের স্পিকার ড্রাইভারে থাকে সস্তা কাপড়, কিন্তু আসলটিতে থাকে ইলেক্ট্রো-প্লেটেড মাইক্রোস্কোপিক মেটাল অ্যাকোস্টিক মেশ ও প্রেসার রিলিফ ভেন্ট।
+                </p>
+                <div class="auth-pass-pill">✓ নিখুঁত মেটাল মেশ ও লেজার কোড</div>
+            </div>
+
+            <!-- পরীক্ষা ৪: অডিও প্রসেসিং চিপ ও নয়েজ ক্যান্সেলেশন -->
+            <div class="auth-card">
+                <div class="auth-card-num">০৪</div>
+                <div class="auth-card-icon">⚡</div>
+                <h3>জেনুইন চিপসেট ও অ্যাক্টিভ নয়েজ ক্যান্সেলেশন (ANC)</h3>
+                <p>
+                    অ্যাপলের ক্ষেত্রে Apple H1/H2 চিপ, সোনিতে V2/QN2e প্রসেসর। ক্লোন বাডে নয়েজ ক্যান্সেলেশন কেবল মুখে বলে, কাজ করে না। আমাদের প্রতিটি পার্টসে ডুয়াল বিমফর্মিং মাইক্রোফোন ও প্রেসার সেন্সর ১০০% কার্যকর।
+                </p>
+                <div class="auth-pass-pill">✓ ফুল ANC ও ট্রান্সপারেন্সি মোড কার্যকর</div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ৫. আসল বনাম ক্লোন/নকল বাডের তুলনামূলক ছক (Comparison Table) -->
+    <section class="auth-comparison-section">
+        <div class="section-title-wrap">
+            <span class="section-subtitle">সরাসরি পার্থক্য দেখুন</span>
+            <h2 class="section-title">BudsRecover আসল OEM বনাম বাজারের নকল ক্লোন</h2>
+        </div>
+
+        <div class="comparison-table-wrapper">
+            <table class="auth-table">
+                <thead>
+                    <tr>
+                        <th>যাচাইয়ের মাপকাঠি</th>
+                        <th class="col-real">BudsRecover (১০০% আসল OEM)</th>
+                        <th class="col-fake">বাজারের সস্তা ক্লোন বা মাস্টার কপি</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ব্লুটুথ পেয়ারিং</strong></td>
+                        <td class="text-real">✅ পুরনো কেসে রাখার পর অটো পেয়ার ও সিঙ্ক হয়</td>
+                        <td class="text-fake">❌ ভিন্ন ব্লুটুথ ডিভাইস হিসেবে দেখায়, একসাথে বাজে না</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ফার্মওয়্যার আপডেট</strong></td>
+                        <td class="text-real">✅ অফিশিয়াল Apple/Galaxy Wearable অ্যাপ দিয়ে আপডেট হয়</td>
+                        <td class="text-fake">❌ আপডেট দিলে নষ্ট বা অকেজো হয়ে যায়</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ফাইন্ড মাই নেটওয়ার্ক</strong></td>
+                        <td class="text-real">✅ Find My / SmartThings এ লাইভ ট্র্যাক করা যায়</td>
+                        <td class="text-fake">❌ লোকেশন ট্র্যাকিং বা অডিও বিপ সাপোর্ট করে না</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ব্যাটারি ব্যাকআপ</strong></td>
+                        <td class="text-real">✅ অফিশিয়াল ৪.৫ থেকে ৬ ঘণ্টা একটানা প্লেব্যাক</td>
+                        <td class="text-fake">❌ সর্বোচ্চ ৪৫ মিনিট থেকে ১ ঘণ্টার মধ্যে ব্যাটারি শেষ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ওয়ারেন্টি সুবিধা</strong></td>
+                        <td class="text-real">✅ ৯০ দিনের ইনস্ট্যান্ট রিপ্লেসমেন্ট ওয়ারেন্টি</td>
+                        <td class="text-fake">❌ কেনার পর কোনো গ্যারান্টি বা ওয়ারেন্টি নেই</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ৬. ওয়ারেন্টি পলিসি ও মানি-ব্যাক প্রতিশ্রুতি -->
+    <section class="auth-guarantee-banner">
+        <div class="guarantee-box">
+            <div class="guarantee-icon">🤝</div>
+            <div class="guarantee-text">
+                <h2>আমাদের লৌহকঠিন প্রতিশ্রুতি</h2>
+                <p>
+                    পার্সেল রিসিভ করার পর আপনি যদি কোনো অনুমোদিত সার্ভিস সেন্টার (যেমন Apple Authorized Service Provider বা Samsung Care) থেকে প্রমাণ করতে পারেন যে পার্টটি আসল নয়, তবে আমরা পণ্য ফেরত নিয়ে আপনার <strong>সম্পূর্ণ টাকা রিফান্ড</strong> করব।
+                </p>
+            </div>
+            <div class="guarantee-action">
+                <a href="{{ url_for('index') }}#shop" class="btn btn-primary btn-large">
+                    নিশ্চিন্তে আসল পার্টস কিনুন ➔
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- QR কোড ডিকোড করার জন্য বিশ্বমানের লাইব্রেরি html5-qrcode লোড করা -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+    // গ্লোবাল ভ্যারিয়েবলসমূহ
+    let html5QrScannerInstance = null;
+    const initialVerifyCode = "{{ initial_code or '' }}";
+
+    // পেজ লোড হওয়ার পর যদি URL-এ কোনো কোড থাকে (যেমন: ?verify=OEM-CERT-APP-01) তবে অটো ভেরিফাই করা
+    document.addEventListener('DOMContentLoaded', () => {
+        if (initialVerifyCode) {
+            simulateVerification(initialVerifyCode);
+        }
+    });
+
+    // ১. স্ক্যানার ট্যাব সুইচার ফাংশন
+    function switchScannerTab(tab) {
+        document.getElementById('tabCameraBtn').classList.toggle('active', tab === 'camera');
+        document.getElementById('tabUploadBtn').classList.toggle('active', tab === 'upload');
+        document.getElementById('tabDemoBtn').classList.toggle('active', tab === 'demo');
+
+        document.getElementById('cameraPanel').style.display = (tab === 'camera') ? 'block' : 'none';
+        document.getElementById('uploadPanel').style.display = (tab === 'upload') ? 'block' : 'none';
+        document.getElementById('demoPanel').style.display = (tab === 'demo') ? 'block' : 'none';
+
+        if (tab !== 'camera') {
+            stopCameraScanner();
+        }
+    }
+
+    // ২. ক্যামেরা স্ক্যানার চালু করার ফাংশন (Html5Qrcode API)
+    async function startCameraScanner() {
+        const startBtn = document.getElementById('startCameraBtn');
+        const stopBtn = document.getElementById('stopCameraBtn');
+        const placeholder = document.getElementById('cameraPlaceholder');
+        const laser = document.getElementById('laserLine');
+
+        if (typeof Html5Qrcode === 'undefined') {
+            alert('ক্যামেরা স্ক্যানার লাইব্রেরি লোড হচ্ছে, অনুগ্রহ করে ৫ সেকেন্ড পর আবার চেষ্টা করুন।');
+            return;
+        }
+
+        try {
+            startBtn.disabled = true;
+            startBtn.innerHTML = 'ক্যামেরা চালু হচ্ছে...';
+
+            if (!html5QrScannerInstance) {
+                html5QrScannerInstance = new Html5Qrcode("qrVideoContainer");
+            }
+
+            placeholder.style.display = 'none';
+            laser.style.display = 'block';
+
+            const config = { fps: 10, qrbox: { width: 240, height: 240 } };
+
+            await html5QrScannerInstance.start(
+                { facingMode: "environment" },
+                config,
+                (decodedText, decodedResult) => {
+                    // QR কোড সফলভাবে ডিটেক্ট হলে
+                    stopCameraScanner();
+                    executeQrVerification(decodedText);
+                },
+                (errorMessage) => {
+                    // স্ক্যানিং এর সময় ফ্রেম পার্সিং
+                }
+            );
+
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-flex';
+
+        } catch (err) {
+            console.error('Camera access error:', err);
+            placeholder.style.display = 'flex';
+            laser.style.display = 'none';
+            alert('ক্যামেরা পারমিশন পাওয়া যায়নি। আপনি "🖼️ QR ছবি আপলোড" অথবা "⚡ ১-ক্লিক ডেমো টেস্ট" ব্যবহার করতে পারেন।');
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<span>📷 ক্যামেরা চালু করুন</span>';
+        }
+    }
+
+    // ৩. ক্যামেরা স্ক্যানার বন্ধ করার ফাংশন
+    function stopCameraScanner() {
+        const startBtn = document.getElementById('startCameraBtn');
+        const stopBtn = document.getElementById('stopCameraBtn');
+        const placeholder = document.getElementById('cameraPlaceholder');
+        const laser = document.getElementById('laserLine');
+
+        if (html5QrScannerInstance && html5QrScannerInstance.isScanning) {
+            html5QrScannerInstance.stop().then(() => {
+                html5QrScannerInstance.clear();
+            }).catch(e => console.error(e));
+        }
+
+        placeholder.style.display = 'flex';
+        laser.style.display = 'none';
+        startBtn.style.display = 'inline-flex';
+        startBtn.disabled = false;
+        startBtn.innerHTML = '<span>📷 ক্যামেরা চালু করুন</span>';
+        stopBtn.style.display = 'none';
+    }
+
+    // ৪. ছবি আপলোড করে QR কোড ডিকোড করার ফাংশন
+    async function handleQrImageUpload(input) {
+        if (!input.files || input.files.length === 0) return;
+        const file = input.files[0];
+
+        const resBox = document.getElementById('qrResultContainer');
+        resBox.style.display = 'block';
+        resBox.innerHTML = '<div class="spinner"></div><p style="text-align:center; padding:1rem; color:var(--text-muted);">ছবি থেকে QR কোড রিড করা হচ্ছে...</p>';
+
+        try {
+            const scanner = new Html5Qrcode("qrVideoContainer");
+            const decodedText = await scanner.scanFile(file, true);
+            scanner.clear();
+            executeQrVerification(decodedText);
+        } catch (err) {
+            resBox.innerHTML = `
+                <div class="qr-fake-card">
+                    <div class="result-head-row">
+                        <span class="fake-badge">⚠️ QR কোড পড়া যায়নি</span>
+                    </div>
+                    <h4>ছবিতে স্পষ্ট কোনো QR কোড খুঁজে পাওয়া যায়নি</h4>
+                    <p>অনুগ্রহ করে পরিষ্কার আলোতে তোলা QR কোডের ছবি আপলোড করুন অথবা নিচের "১-ক্লিক ডেমো টেস্ট" বাটন ব্যবহার করুন।</p>
+                </div>
+            `;
+        }
+    }
+
+    // ৫. ১-ক্লিক ডেমো সিমুলেশন ফাংশন
+    function simulateVerification(code) {
+        executeQrVerification(code);
+    }
+
+    // ৬. ব্যাকএন্ড API (/api/verify-qr) কল করে আসল বা নকল যাচাই করার কেন্দ্রীয় ফাংশন
+    async function executeQrVerification(qrData) {
+        const resBox = document.getElementById('qrResultContainer');
+        resBox.style.display = 'block';
+        resBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        resBox.innerHTML = '<div class="spinner"></div><p style="text-align:center; padding:1rem; color:var(--text-muted);">ল্যাব ডাটাবেজে কিউআর কোড ও ক্রিপ্টোগ্রাফিক সিরিয়াল মিলানো হচ্ছে...</p>';
+
+        try {
+            const res = await fetch('/api/verify-qr', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: qrData })
+            });
+            const data = await res.json();
+
+            if (data.success && data.status === 'GENUINE_OEM') {
+                // আসল OEM পার্টসের সবুজ সার্টিফিকেট কার্ড
+                const cert = data.certificate;
+                const prod = data.product;
+
+                resBox.innerHTML = `
+                    <div class="qr-certified-card">
+                        
+                        <!-- সার্টিফিকেট হেডার -->
+                        <div class="cert-header">
+                            <div class="cert-badge">
+                                <span class="verified-icon">🛡️</span>
+                                <div>
+                                    <h3>১০০% জেনুইন অরিজিনাল সার্টিফাইড OEM</h3>
+                                    <small>BudsRecover Acoustic & Hardware Lab Verified</small>
+                                </div>
+                            </div>
+                            <div class="cert-token">
+                                <span>সার্টিফিকেট আইডি:</span>
+                                <strong>${cert.code}</strong>
+                            </div>
+                        </div>
+
+                        <!-- পণ্যের নাম ও হার্ডওয়্যার মেটা -->
+                        <div class="cert-body-grid">
+                            <div class="cert-meta-item">
+                                <span class="lbl">ব্র্যান্ড ও মডেল:</span>
+                                <strong>${cert.brand} · ${cert.model}</strong>
+                            </div>
+                            <div class="cert-meta-item">
+                                <span class="lbl">পার্ট টাইপ:</span>
+                                <strong class="text-accent">${cert.part_type}</strong>
+                            </div>
+                            <div class="cert-meta-item">
+                                <span class="lbl">হার্ডওয়্যার সিরিয়াল কোড:</span>
+                                <strong class="serial-tag">${cert.serial_number}</strong>
+                            </div>
+                            <div class="cert-meta-item">
+                                <span class="lbl">ল্যাব অডিট রিপোর্ট:</span>
+                                <strong class="text-success">${cert.lab_test_status}</strong>
+                            </div>
+                            <div class="cert-meta-item">
+                                <span class="lbl">ফ্রিকোয়েন্সি রেসপন্স:</span>
+                                <span>${cert.frequency_response}</span>
+                            </div>
+                            <div class="cert-meta-item">
+                                <span class="lbl">ANC নয়েজ ক্যান্সেলেশন:</span>
+                                <span>${cert.anc_efficiency}</span>
+                            </div>
+                            <div class="cert-meta-item">
+                                <span class="lbl">ওয়ারেন্টি কভারেজ:</span>
+                                <strong class="text-accent">${cert.warranty_days} দিনের ফুল রিপ্লেসমেন্ট অ্যাক্টিভ</strong>
+                            </div>
+                            <div class="cert-meta-item">
+                                <span class="lbl">পরীক্ষক ল্যাব:</span>
+                                <span>${cert.tested_by}</span>
+                            </div>
+                        </div>
+
+                        <!-- ট্রাস্ট সিল ও অ্যাকশন বাটন -->
+                        <div class="cert-footer">
+                            <div class="cert-seal">
+                                <span>🔒 অফিসিয়াল ক্রিপ্টোগ্রাফিক সিগনেচার ভেরিফাইড</span>
+                            </div>
+                            ${prod && prod.id ? `
+                                <a href="/product/${prod.id}" class="btn btn-primary btn-sm">
+                                    এই প্রোডাক্টটি সরাসরি স্টোরে দেখুন ➔
+                                </a>
+                            ` : ''}
+                        </div>
+
+                    </div>
+                `;
+            } else {
+                // নকল বা অননুমোদিত কোডের লাল সতর্কবার্তা কার্ড
+                resBox.innerHTML = `
+                    <div class="qr-fake-card">
+                        <div class="result-head-row">
+                            <span class="fake-badge">⚠️ আনভেরিফাইড / নকল পার্টস সতর্কবার্তা</span>
+                            <small class="scan-time">স্ক্যান করা কোড: <code>${data.scanned_code}</code></small>
+                        </div>
+                        <h3>সতর্কতা: এটি একটি অননুমোদিত বা ক্লোন বাড হওয়ার সম্ভাবনা ৯৯%</h3>
+                        <p class="fake-desc">
+                            এই QR কোডটি BudsRecover-এর অফিসিয়াল OEM ল্যাব ডাটাবেজের কোনো রেজিস্টার্ড পণ্যের সাথে মিলেনি। 
+                            বাজারের নকল বা মাস্টার কপি ইয়ারবাডে আসল অ্যাপল/স্যামসাং চিপ থাকে না, ফলে এগুলো ফার্মওয়্যার আপডেট নেয় না এবং দীর্ঘ ব্যবহারে কানের শ্রবণশক্তির ক্ষতি হতে পারে।
+                        </p>
+                        <div class="fake-action-row">
+                            <a href="/#shop" class="btn btn-primary">
+                                আমাদের আসল OEM ক্যাটালগ দেখুন ➔
+                            </a>
+                            <a href="/help" class="btn btn-outline">
+                                সন্দেহজনক পার্টস রিপোর্ট করুন
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+
+        } catch (err) {
+            console.error('Verify QR error:', err);
+            resBox.innerHTML = '<p style="color:var(--danger); text-align:center;">সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে। আবার চেষ্টা করুন।</p>';
+        }
+    }
+
+    // ৭. মডেল কোড চেকার ফাংশন
+    function fillAndCheck(code) {
+        document.getElementById('modelCodeInput').value = code;
+        executeModelSearch(code);
+    }
+
+    function handleModelCheck(e) {
+        e.preventDefault();
+        const code = document.getElementById('modelCodeInput').value.trim();
+        if (code) executeModelSearch(code);
+    }
+
+    async function executeModelSearch(code) {
+        const btn = document.getElementById('checkModelBtn');
+        const resArea = document.getElementById('checkerResultArea');
+        
+        btn.disabled = true;
+        btn.innerHTML = 'যাচাই হচ্ছে...';
+        resArea.style.display = 'block';
+        resArea.innerHTML = '<div class="spinner"></div><p style="text-align:center; color:var(--text-muted); padding:1rem;">ডাটাবেজে আসল পার্টসের স্পেসিফিকেশন মিলানো হচ্ছে...</p>';
+
+        try {
+            const res = await fetch('/api/check-model', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
+            });
+            const data = await res.json();
+
+            if (data.success && data.matches && data.matches.length > 0) {
+                let html = '<div class="match-success-head"><span>✅ ভেরিফিকেশন সফল!</span> ' + data.matches.length + ' টি আসল OEM পার্টস পাওয়া গেছে:</div><div class="matched-cards-grid">';
+                data.matches.forEach(m => {
+                    html += `
+                        <div class="matched-item-card">
+                            <img src="${m.image}" alt="${m.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                            <div class="matched-item-info">
+                                <span class="badge part-badge">${m.category}</span>
+                                <h4>${m.name}</h4>
+                                <div class="matched-compat"><strong>কম্প্যাটিবল মডেল:</strong> ${m.compatibility}</div>
+                                <div class="matched-price">৳${Math.round(m.price)}</div>
+                                <a href="/product/${m.id}" class="btn btn-sm btn-primary">বিস্তারিত দেখুন ও কিনুন →</a>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                resArea.innerHTML = html;
+            } else {
+                resArea.innerHTML = `
+                    <div class="match-not-found">
+                        <span>⚠️</span>
+                        <div>
+                            <h4>${data.message || 'কোনো তথ্য পাওয়া যায়নি।'}</h4>
+                            <p>আপনার বাডের মডেল নম্বর নিশ্চিত করতে চার্জিং কেসের ভেতরের ঢাকনা দেখুন অথবা আমাদের সাপোর্ট টিমে বার্তা দিন।</p>
+                            <a href="/help" class="btn btn-outline btn-sm">মডেল হেল্প রিকোয়েস্ট পাঠান →</a>
+                        </div>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            resArea.innerHTML = '<p style="color:var(--danger); text-align:center;">সার্ভারের সাথে সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।</p>';
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'আসল পার্ট খুঁজুন ➔';
+        }
+    }
+</script>
+{% endblock %}

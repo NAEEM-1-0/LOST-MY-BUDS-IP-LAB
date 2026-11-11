@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/order_success.html
+     বিবরণ: সফল অর্ডার কনফার্মেশন ও ডিজিটাল ইনভয়েস পেজ - অর্ডার কোড, ডেলিভারি ট্র্যাকিং
+           টাইমলাইন, কাস্টমার রিসিট এবং পেয়ারিং নির্দেশিকা রিমাইন্ডার।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}অর্ডার সফল হয়েছে — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="success-page-wrap">
+    
+    <div class="success-card">
+        
+        <!-- সাকসেস এনিমেশন আইকন -->
+        <div class="success-icon-ring">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <span class="success-badge">অর্ডার কনফার্মড</span>
+        <h1 class="success-title">ধন্যবাদ! আপনার অর্ডারটি গ্রহণ করা হয়েছে</h1>
+        <p class="success-desc">
+            অর্ডার কোড: <strong>{{ order.order_code }}</strong>। আপনার পার্সেলটি অতি দ্রুত প্রস্তুত করে ডেলিভারিতে পাঠানো হবে।
+        </p>
+
+        <!-- অর্ডার ট্র্যাকিং টাইমলাইন স্টেপার -->
+        <div class="order-stepper">
+            <div class="stepper-step completed">
+                <div class="step-circle">✓</div>
+                <span>অর্ডার প্লেসড</span>
+            </div>
+            <div class="stepper-line active"></div>
+            <div class="stepper-step active">
+                <div class="step-circle">⚡</div>
+                <span>প্রসেসিং</span>
+            </div>
+            <div class="stepper-line"></div>
+            <div class="stepper-step">
+                <div class="step-circle">🚚</div>
+                <span>কুরিয়ারে হস্তান্তর</span>
+            </div>
+            <div class="stepper-line"></div>
+            <div class="stepper-step">
+                <div class="step-circle">🏠</div>
+                <span>ডেলিভার্ড</span>
+            </div>
+        </div>
+
+        <!-- ডিজিটাল ইনভয়েস সামারি বক্স -->
+        <div class="invoice-box" id="printableInvoice">
+            <div class="invoice-header">
+                <div>
+                    <h3>ইনভয়েস বিবরণ</h3>
+                    <small>অর্ডার তারিখ: {{ order.created_at }}</small>
+                </div>
+                <span class="invoice-status-pill">{{ order.status }}</span>
+            </div>
+
+            <!-- গ্রাহক ও ডেলিভারি তথ্য -->
+            <div class="invoice-meta-grid">
+                <div>
+                    <span class="meta-label">গ্রাহকের নাম:</span>
+                    <strong>{{ order.customer_name }}</strong>
+                </div>
+                <div>
+                    <span class="meta-label">ফোন নম্বর:</span>
+                    <strong>{{ order.customer_phone }}</strong>
+                </div>
+                <div>
+                    <span class="meta-label">পেমেন্ট মেথড:</span>
+                    <strong>{{ order.payment_method }} ({{ order.payment_status }})</strong>
+                </div>
+                <div>
+                    <span class="meta-label">ডেলিভারি ঠিকানা:</span>
+                    <strong>{{ order.shipping_address }}, {{ order.city }}</strong>
+                </div>
+            </div>
+
+            <!-- অর্ডার করা আইটেমের তালিকা -->
+            <table class="invoice-items-table">
+                <thead>
+                    <tr>
+                        <th>প্রোডাক্ট</th>
+                        <th>ধরন</th>
+                        <th>পরিমাণ</th>
+                        <th class="text-right">মূল্য</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for it in items %}
+                    <tr>
+                        <td><strong>{{ it.product_name }}</strong></td>
+                        <td>{{ it.category }}</td>
+                        <td>{{ it.quantity }} টি</td>
+                        <td class="text-right">৳{{ '%.0f'|format(it.price * it.quantity) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right">ডেলিভারি চার্জ:</td>
+                        <td class="text-right">৳{{ '%.0f'|format(order.delivery_fee) }}</td>
+                    </tr>
+                    {% if order.discount and order.discount > 0 %}
+                    <tr style="color:var(--accent);">
+                        <td colspan="3" class="text-right">কুপন ছাড় ({{ order.coupon_code or 'PROMO' }}):</td>
+                        <td class="text-right">−৳{{ '%.0f'|format(order.discount) }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row">
+                        <td colspan="3" class="text-right"><strong>সর্বমোট প্রদেয়:</strong></td>
+                        <td class="text-right"><strong>৳{{ '%.0f'|format(order.total) }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+
+        <!-- পেয়ারিং রিমাইন্ডার কার্ড -->
+        <div class="pairing-reminder-card">
+            <div class="reminder-icon">💡</div>
+            <div class="reminder-text">
+                <strong>বাড পেয়ার করার টিপস:</strong>
+                <p>পার্সেল হাতে পাওয়ার পর নতুন বাডটি পুরনো কেসে রেখে ৩০ মিনিট চার্জ দিন। তারপর আমাদের সহজ ভিডিও বা স্টেপ দেখে ব্লুটুথে রিকানেক্ট করুন।</p>
+                <a href="{{ url_for('pairing_guide') }}" class="text-link">পেয়ারিং নির্দেশিকা দেখতে ক্লিক করুন →</a>
+            </div>
+        </div>
+
+        <!-- অ্যাকশন বাটনসমূহ -->
+        <div class="success-actions">
+            <!-- লাইভ পার্সেল ট্র্যাক করার বাটন -->
+            <a href="{{ url_for('track_order', code=order.order_code) }}" class="btn btn-primary">
+                📦 লাইভ ট্র্যাক করুন ➔
+            </a>
+            <!-- ইনভয়েস প্রিন্ট করার বাটন -->
+            <button type="button" class="btn btn-outline" onclick="window.print()">
+                🖨️ ইনভয়েস প্রিন্ট করুন
+            </button>
+            <!-- ইউজারের সব অর্ডার দেখার বাটন -->
+            <a href="{{ url_for('my_orders') }}" class="btn btn-secondary">
+                আমার সব অর্ডার দেখুন
+            </a>
+            <!-- হোমপেজে ফিরে যাওয়ার বাটন -->
+            <a href="{{ url_for('index') }}" class="btn btn-outline">
+                হোমপেজে ফিরুন
+            </a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

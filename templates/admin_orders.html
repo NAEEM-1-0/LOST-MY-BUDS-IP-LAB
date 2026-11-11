@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/admin_orders.html
+     বিবরণ: সমস্ত কাস্টমার অর্ডারের এডমিন ভিউ - গ্রাহকের তথ্য, অর্ডারের পণ্য তালিকা,
+           এবং রিয়েল-টাইম অর্ডার স্ট্যাটাস (Pending/Processing/Shipped/Delivered) পরিবর্তন।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}অর্ডার ম্যানেজমেন্ট — BudsRecover Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-wrap">
+    
+    <div class="admin-header-flex">
+        <div>
+            <a href="{{ url_for('admin_dashboard') }}" class="back-nav-link">← ড্যাশবোর্ডে ফিরে যান</a>
+            <h1 class="page-title">সমস্ত কাস্টমার অর্ডার তালিকা ({{ orders|length }} টি)</h1>
+        </div>
+    </div>
+
+    {% if not orders %}
+    <div class="empty-orders-box">
+        <div class="empty-icon">📦</div>
+        <h2>এখনও কোনো অর্ডার পাওয়া যায়নি</h2>
+    </div>
+    {% else %}
+    <div class="dashboard-card full-width">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>অর্ডার কোড</th>
+                        <th>গ্রাহকের বিবরণ</th>
+                        <th>ডেলিভারি ঠিকানা</th>
+                        <th>অর্ডারকৃত পার্টস</th>
+                        <th>মোট মূল্য</th>
+                        <th>বর্তমান অবস্থা ও পরিবর্তন</th>
+                        <th>অর্ডারের তারিখ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in orders %}
+                    <tr>
+                        <td>
+                            <strong>{{ o.order_code or ('#BR-' ~ o.id) }}</strong>
+                            <br><small class="text-muted">পেমেন্ট: {{ o.payment_method }}</small>
+                        </td>
+                        <td>
+                            <strong>{{ o.customer_name }}</strong>
+                            <br><small>{{ o.customer_phone }}</small>
+                            {% if o.customer_email %}<br><small class="text-muted">{{ o.customer_email }}</small>{% endif %}
+                        </td>
+                        <td>
+                            <small>{{ o.shipping_address }}, {{ o.city }}</small>
+                            {% if o.order_notes %}<br><em class="order-notes-tag">নোট: {{ o.order_notes }}</em>{% endif %}
+                        </td>
+                        <td>
+                            <ul class="admin-order-items-mini">
+                                {% for it in order_items_map.get(o.id, []) %}
+                                <li>{{ it.product_name }} <strong>× {{ it.quantity }}</strong></li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <strong>৳{{ '%.0f'|format(o.total) }}</strong>
+                        </td>
+                        <td>
+                            <!-- এই ফর্মের মাধ্যমে এডমিন সরাসরি স্ট্যাটাস পরিবর্তন করতে পারে -->
+                            <form method="POST" action="{{ url_for('admin_update_order_status', oid=o.id) }}" class="status-update-form">
+                                <select name="status" class="status-select-mini">
+                                    <option value="Pending" {% if o.status == 'Pending' %}selected{% endif %}>⏳ Pending</option>
+                                    <option value="Processing" {% if o.status == 'Processing' %}selected{% endif %}>⚡ Processing</option>
+                                    <option value="Shipped" {% if o.status == 'Shipped' %}selected{% endif %}>🚚 Shipped</option>
+                                    <option value="Delivered" {% if o.status == 'Delivered' %}selected{% endif %}>✅ Delivered</option>
+                                    <option value="Cancelled" {% if o.status == 'Cancelled' %}selected{% endif %}>❌ Cancelled</option>
+                                </select>
+                                <button type="submit" class="btn-status-save" title="স্ট্যাটাস আপডেট করুন">সেভ</button>
+                            </form>
+                        </td>
+                        <td>
+                            <small>{{ o.created_at }}</small>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

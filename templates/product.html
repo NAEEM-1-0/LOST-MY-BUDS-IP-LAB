@@ -1,0 +1,394 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/product.html
+     বিবরণ: সিঙ্গেল প্রোডাক্ট বিস্তারিত পেজ - ইমেজ গ্যালারি, কম্প্যাটিবিলিটি মডেল কোড,
+           ব্র্যান্ড অনুযায়ী ৬০-সেকেন্ড পেয়ারিং গাইড, কোয়ান্টিটি সিলেক্টর, 
+           ম্যাচিং রিলেটেড পার্টস (Complete the Pair) এবং কাস্টমার রিভিউ।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}{{ product.name }} — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="product-page-container">
+
+    <!-- ব্রেডক্রাম্ব নেভিগেশন (Breadcrumbs) -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ url_for('index') }}">হোম</a>
+        <span class="sep">/</span>
+        <a href="{{ url_for('index', brand=product.brand) }}#shop">{{ product.brand }}</a>
+        <span class="sep">/</span>
+        <a href="{{ url_for('index', category=product.category) }}#shop">{{ product.category }}</a>
+        <span class="sep">/</span>
+        <span class="current">{{ product.name }}</span>
+    </nav>
+
+    <!-- মূল প্রোডাক্ট ডিটেইল গ্রিড -->
+    <div class="product-single-grid">
+        
+        <!-- বাম কলাম: প্রোডাক্ট ইমেজ ও কোয়ালিটি ব্যাজ -->
+        <div class="single-image-col">
+            <div class="single-image-wrapper">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="single-main-img" id="mainProductImage" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                <span class="badge part-badge {{ product.category|lower|replace(' ', '-') }} single-part-badge">
+                    {{ product.category }}
+                </span>
+                <span class="badge condition-badge single-condition-badge">
+                    {{ product.condition }}
+                </span>
+            </div>
+
+            <!-- ট্রাস্ট ব্যাজ বক্স -->
+            <div class="single-trust-features">
+                <div class="feature-item">
+                    <span class="feature-icon">🛡️</span>
+                    <div>
+                        <strong>১০০% অরিজিনাল সার্টিফাইড</strong>
+                        <p>ল্যাব টেস্টেড আসল OEM পার্টস</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔄</span>
+                    <div>
+                        <strong>৯০ দিনের রিপ্লেসমেন্ট</strong>
+                        <p>যেকোনো ইন্টারনাল ত্রুটিতে ফ্রি এক্সচেঞ্জ</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🚚</span>
+                    <div>
+                        <strong>ক্যাশ অন ডেলিভারি</strong>
+                        <p>পণ্য হাতে পেয়ে চেক করে পেমেন্ট</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ১০০% আসল পার্টস যাচাইকরণ লিঙ্ক ব্যানার -->
+            <a href="{{ url_for('authenticity') }}" class="authenticity-cta-banner">
+                <span class="auth-icon">🔍</span>
+                <div class="auth-cta-text">
+                    <strong>১০০% আসল OEM পার্টস কীভাবে চিনবেন?</strong>
+                    <small>৪-দফা ল্যাব টেস্ট ও মডেল কোড চেকার গাইড দেখুন ➔</small>
+                </div>
+            </a>
+
+            <!-- অফিশিয়াল OEM ভেরিফিকেশন QR কোড কার্ড -->
+            <div class="product-qr-card">
+                <div class="qr-card-header">
+                    <span class="qr-badge">🛡️ ল্যাব সার্টিফাইড QR</span>
+                    <h4>আসল পার্টস যাচাইকরণ কোড</h4>
+                </div>
+                <div class="qr-card-content">
+                    <div class="qr-code-img-box">
+                        <img 
+                            src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data={{ url_for('authenticity', verify=product.certificate_code or ('OEM-CERT-' ~ product.brand[:3]|upper ~ '-' ~ product.id), _external=True) }}" 
+                            alt="OEM Verification QR Code" 
+                            class="qr-code-img"
+                            loading="lazy"
+                        >
+                    </div>
+                    <div class="qr-card-meta">
+                        <span class="cert-code-label">সার্টিফিকেট আইডি:</span>
+                        <code class="cert-code-val">{{ product.certificate_code or ('OEM-CERT-' ~ product.brand[:3]|upper ~ '-' ~ '%02d'|format(product.id)) }}</code>
+                        <span class="cert-serial-label">সিরিয়াল: <strong>{{ product.serial_number or ('BR-OEM-SN' ~ (84000 + product.id)) }}</strong></span>
+                        <!-- এই বাটনে ক্লিক করলে সরাসরি কিউআর কোড ভেরিফিকেশন ওপেন হবে -->
+                        <a href="{{ url_for('authenticity', verify=product.certificate_code or ('OEM-CERT-' ~ product.brand[:3]|upper ~ '-' ~ product.id)) }}" class="btn-verify-qr-link">
+                            ল্যাবে কোডটি টেস্ট করুন ➔
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ডান কলাম: প্রোডাক্টের নাম, দাম, বাটন এবং স্পেসিফিকেশন -->
+        <div class="single-info-col">
+            <div class="single-brand-model">
+                {{ product.brand }} · {{ product.model }}
+            </div>
+            
+            <h1 class="single-product-title">{{ product.name }}</h1>
+
+            <!-- রেটিং ও রিভিউ সংখ্যা -->
+            <div class="single-rating-row">
+                <span class="stars">★★★★★</span>
+                <span class="rating-val">{{ product.rating }}</span>
+                <span class="rating-text">({{ product.reviews_count }} টি ভেরিফায়েড রিভিউ)</span>
+            </div>
+
+            <!-- মূল্য ও ডিসকাউন্ট সেকশন -->
+            <div class="single-pricing-box">
+                <span class="single-current-price">৳{{ '%.0f'|format(product.price) }}</span>
+                {% if product.original_price and product.original_price > product.price %}
+                <span class="single-original-price">৳{{ '%.0f'|format(product.original_price) }}</span>
+                <span class="single-save-badge">
+                    সাশ্রয় ৳{{ '%.0f'|format(product.original_price - product.price) }}
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- স্টক স্ট্যাটাস -->
+            <div class="single-stock-status">
+                {% if product.stock > 0 %}
+                <span class="stock-indicator in-stock"></span>
+                <span>স্টকে বিদ্যমান রয়েছে ({{ product.stock }} টি অবশিষ্ট)</span>
+                {% else %}
+                <span class="stock-indicator out-of-stock"></span>
+                <span>এই মুহূর্তে স্টক শেষ</span>
+                {% endif %}
+            </div>
+
+            <!-- প্রোডাক্ট বর্ণনা -->
+            <p class="single-description">
+                {{ product.description }}
+            </p>
+
+            <!-- কম্প্যাটিবিলিটি হাইলাইট বক্স (কোন মডেল কোডের সাথে মিলবে) -->
+            <div class="compatibility-notice-box">
+                <div class="notice-title">
+                    <span>⚠️</span> <strong>মডেল ম্যাচিং সতর্কতা:</strong>
+                </div>
+                <p>{{ product.compatibility }}</p>
+            </div>
+
+            <!-- কেনাকাটার ফর্ম ও অ্যাকশন বাটনসমূহ -->
+            {% if product.stock > 0 %}
+            <form method="POST" action="{{ url_for('add_to_cart', pid=product.id) }}" class="single-buy-form">
+                
+                <div class="quantity-control-row">
+                    <label for="productQuantity">পরিমাণ (Quantity):</label>
+                    <div class="quantity-input-stepper">
+                        <button type="button" class="stepper-btn" onclick="decreaseSingleQty()">−</button>
+                        <input type="number" name="quantity" id="productQuantity" value="1" min="1" max="{{ product.stock }}" readonly>
+                        <button type="button" class="stepper-btn" onclick="increaseSingleQty({{ product.stock }})">+</button>
+                    </div>
+                </div>
+
+                <div class="single-action-buttons">
+                    <!-- এই বাটনে ক্লিক করলে রিয়েল-টাইম AJAX দিয়ে সাইড ড্রয়ারে আইটেম ঢুকবে -->
+                    <button type="button" class="btn btn-primary btn-large ajax-add-to-cart-btn" data-pid="{{ product.id }}" id="singleAddToCartBtn">
+                        <span class="btn-icon">+</span>
+                        <span>ব্যাগে যোগ করুন</span>
+                    </button>
+
+                    <!-- সরাসরি চেকআউটে যাওয়ার সাধারণ ফর্ম সাবমিট বাটন -->
+                    <button type="submit" class="btn btn-secondary btn-large" id="singleDirectBuyBtn">
+                        <span>সরাসরি অর্ডার করুন →</span>
+                    </button>
+                </div>
+
+            </form>
+            {% else %}
+            <div class="out-of-stock-alert">
+                <p>পণ্যটি বর্তমানে স্টকে নেই। নতুন স্টক আসার সাথে সাথে নোটিফিকেশন পেতে যোগাযোগ করুন।</p>
+                <a href="{{ url_for('help_request') }}" class="btn btn-outline">স্টক আপডেট জানতে মেসেজ দিন</a>
+            </div>
+            {% endif %}
+
+            <!-- পেয়ারিং গাইড ও তথ্যের অ্যাকর্ডিয়ন বা ট্যাব -->
+            <div class="single-info-accordion">
+                
+                <!-- পেয়ারিং গাইড ড্রপডাউন -->
+                <details class="accordion-item" open>
+                    <summary class="accordion-header">
+                        <span>🎧 এটি কীভাবে আপনার সেটে পেয়ার করবেন?</span>
+                    </summary>
+                    <div class="accordion-body">
+                        <p class="pairing-instructions-text">
+                            {{ product.pairing_guide or 'উভয় বাড কেসে রেখে ২০-৩০ মিনিট চার্জে রাখুন। এরপর কেসের রিসেট বাটনটি ১৫ সেকেন্ড চেপে ধরে পুনরায় ব্লুটুথ সংযোগ দিন।' }}
+                        </p>
+                        <a href="{{ url_for('pairing_guide') }}" class="text-link">বিস্তারিত পেয়ারিং গাইড দেখুন →</a>
+                    </div>
+                </details>
+
+                <!-- ডেলিভারি ও রিটার্ন পলিসি -->
+                <details class="accordion-item">
+                    <summary class="accordion-header">
+                        <span>🚚 ডেলিভারি ও রিটার্ন সুবিধা</span>
+                    </summary>
+                    <div class="accordion-body">
+                        <ul>
+                            <li>ঢাকা সিটির মধ্যে ২৪-৩৬ ঘণ্টার মধ্যে হোম ডেলিভারি (চার্জ ৳৬০)।</li>
+                            <li>ঢাকার বাইরে ৪৮ ঘণ্টার মধ্যে ক্যাশ অন ডেলিভারি (চার্জ ৳১২০)।</li>
+                            <li>৳৫,০০০ টাকার বেশি কেনাকাটায় সারাদেশে ফ্রি ডেলিভারি।</li>
+                            <li>৭ দিনের মানি-ব্যাক ও ৯০ দিনের সরাসরি রিপ্লেসমেন্ট ওয়ারেন্টি।</li>
+                        </ul>
+                    </div>
+                </details>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ম্যাচিং অন্যান্য পার্টস (Complete the Set) -->
+    {% if related %}
+    <section class="related-products-section">
+        <div class="section-title-wrap">
+            <span class="section-subtitle">একই মডেলের অন্যান্য পার্টস</span>
+            <h2 class="section-title">পুরো সেটটি কমপ্লিট করুন</h2>
+        </div>
+        <div class="product-cards-grid related-grid">
+            {% for r in related %}
+            <article class="product-card">
+                <div class="card-badges-row">
+                    <span class="badge part-badge {{ r.category|lower|replace(' ', '-') }}">{{ r.category }}</span>
+                </div>
+                <div class="product-img-box">
+                    <a href="{{ url_for('product', pid=r.id) }}">
+                        <img src="{{ r.image }}" alt="{{ r.name }}" loading="lazy" class="product-thumbnail" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                    </a>
+                </div>
+                <div class="product-details">
+                    <div class="product-brand-tag">{{ r.brand }}</div>
+                    <h3 class="product-title"><a href="{{ url_for('product', pid=r.id) }}">{{ r.name }}</a></h3>
+                    <div class="product-pricing">
+                        <span class="current-price">৳{{ '%.0f'|format(r.price) }}</span>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block ajax-add-to-cart-btn" data-pid="{{ r.id }}">
+                        + ব্যাগে যোগ করুন
+                    </button>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- কাস্টমার রিভিউ সেকশন -->
+    <section class="product-reviews-section">
+        <div class="section-title-wrap">
+            <span class="section-subtitle">ভেরিফায়েড ক্রেতাদের অভিজ্ঞতা</span>
+            <h2 class="section-title">কাস্টমার রিভিউ (Customer Reviews)</h2>
+        </div>
+
+        <div class="reviews-wrapper-grid">
+            <!-- রিভিউ তালিকা কলাম -->
+            <div class="reviews-list-col" id="reviewsListCol">
+                {% if reviews %}
+                    {% for r in reviews %}
+                    <div class="review-card">
+                        <div class="review-stars">
+                            {% for i in range(r.rating) %}★{% endfor %}
+                            {% for i in range(5 - r.rating) %}☆{% endfor %}
+                        </div>
+                        <p class="review-comment">"{{ r.comment }}"</p>
+                        <div class="review-author">
+                            <strong>{{ r.user_name }}</strong>
+                            <span>ভেরিফায়েড ক্রেতা · {{ r.created_at[:10] }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-reviews-note">
+                        <p>এই পার্টসের উপর এখনও কোনো রিভিউ জমা পড়েনি। আপনার অভিজ্ঞতা প্রথম শেয়ার করুন!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- রিভিউ লেখার ফর্ম কার্ড -->
+            <div class="write-review-card">
+                <h3>আপনার মতামত ও অভিজ্ঞতা লিখুন</h3>
+                <p>পণ্যটি কেমন ছিল এবং সংযোগ দিতে পেরেছেন কি না তা জানান</p>
+                <form id="writeReviewForm" onsubmit="handleReviewSubmit(event, {{ product.id }})">
+                    <div class="form-group">
+                        <label for="reviewerName">আপনার নাম <span class="required">*</span></label>
+                        <input type="text" id="reviewerName" value="{{ user_name }}" placeholder="আপনার নাম লিখুন" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewerRating">রেটিং দিন</label>
+                        <select id="reviewerRating" class="form-select">
+                            <option value="5" selected>★★★★★ (৫ স্টার - চমৎকার)</option>
+                            <option value="4">★★★★☆ (৪ স্টার - খুব ভালো)</option>
+                            <option value="3">★★★☆☆ (৩ স্টার - মাঝারি)</option>
+                            <option value="2">★★☆☆☆ (২ স্টার - সাধারণ)</option>
+                            <option value="1">★☆☆☆☆ (১ স্টার - অসন্তোষজনক)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewerComment">আপনার মন্তব্য / রিভিউ <span class="required">*</span></label>
+                        <textarea id="reviewerComment" rows="3" placeholder="সাউন্ড কোয়ালিটি, কন্ডিশন ও পেয়ারিংয়ের অভিজ্ঞতা শেয়ার করুন..." required></textarea>
+                    </div>
+                    <!-- রিভিউ সাবমিট বাটন: AJAX দিয়ে /api/product/<pid>/review এ পাঠাবে -->
+                    <button type="submit" class="btn btn-primary btn-block" id="submitReviewBtn">
+                        <span>রিভিউ জমা দিন ➔</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // এই ফাংশনটি কোয়ান্টিটি ইনপুট ১ কমায় (নূন্যতম ১ থাকবে)
+    function decreaseSingleQty() {
+        const input = document.getElementById('productQuantity');
+        let val = parseInt(input.value) || 1;
+        if (val > 1) {
+            input.value = val - 1;
+        }
+    }
+
+    // এই ফাংশনটি কোয়ান্টিটি ইনপুট ১ বাড়ায় (স্টক সীমার বেশি হতে পারবে না)
+    function increaseSingleQty(maxStock) {
+        const input = document.getElementById('productQuantity');
+        let val = parseInt(input.value) || 1;
+        if (val < maxStock) {
+            input.value = val + 1;
+        }
+    }
+
+    // রিভিউ সাবমিট করার AJAX ফাংশন
+    async function handleReviewSubmit(e, pid) {
+        e.preventDefault();
+        const btn = document.getElementById('submitReviewBtn');
+        const name = document.getElementById('reviewerName').value.trim();
+        const rating = parseInt(document.getElementById('reviewerRating').value) || 5;
+        const comment = document.getElementById('reviewerComment').value.trim();
+
+        if (!comment) return;
+
+        btn.disabled = true;
+        btn.innerHTML = 'রিভিউ সেভ হচ্ছে...';
+
+        try {
+            const res = await fetch(`/api/product/${pid}/review`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, rating: rating, comment: comment })
+            });
+            const data = await res.json();
+            if (data.success) {
+                // নতুন রিভিউ সাথে সাথে DOM এ যোগ করা
+                const listCol = document.getElementById('reviewsListCol');
+                const noRev = listCol.querySelector('.no-reviews-note');
+                if (noRev) noRev.remove();
+
+                let stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+                const newCard = document.createElement('div');
+                newCard.className = 'review-card highlight-new';
+                newCard.innerHTML = `
+                    <div class="review-stars">${stars}</div>
+                    <p class="review-comment">"${comment}"</p>
+                    <div class="review-author">
+                        <strong>${name || 'ভেরিফায়েড ক্রেতা'}</strong>
+                        <span>ভেরিফায়েড ক্রেতা · এইমাত্র</span>
+                    </div>
+                `;
+                listCol.prepend(newCard);
+                document.getElementById('reviewerComment').value = '';
+                alert(data.message || 'ধন্যবাদ! আপনার রিভিউ যোগ হয়েছে।');
+            } else {
+                alert(data.message || 'ত্রুটি ঘটেছে');
+            }
+        } catch (err) {
+            alert('সার্ভার এরর, অনুগ্রহ করে আবার চেষ্টা করুন।');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<span>রিভিউ জমা দিন ➔</span>';
+        }
+    }
+</script>
+{% endblock %}

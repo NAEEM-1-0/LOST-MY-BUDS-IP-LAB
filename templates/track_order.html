@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/track_order.html
+     বিবরণ: রিয়েল-টাইম লাইভ অর্ডার ট্র্যাকিং পেজ।
+           - গ্রাহক তার ইনভয়েস কোড (যেমন: BR-82910) অথবা ফোন নম্বর দিয়ে লাইভ স্ট্যাটাস দেখতে পারেন।
+           - ৪-ধাপের ভিজ্যুয়াল ট্র্যাকিং বার (Pending -> Processing -> Shipped -> Delivered)।
+           - অর্ডারের বিস্তারিত ইনভয়েস ও পার্সেলের পণ্য তালিকা।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}অর্ডার ট্র্যাকিং — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="track-order-page-wrap">
+
+    <!-- পেজ হেডার সেকশন -->
+    <div class="track-header-wrap">
+        <span class="section-subtitle">লাইভ পার্সেল আপডেট</span>
+        <h1 class="page-title">আপনার অর্ডার ট্র্যাক করুন</h1>
+        <p class="track-subtitle-text">
+            অর্ডারের পর এসএমএস বা ইমেইলে পাওয়া ৫-সংখ্যার অর্ডার কোড (যেমন BR-48219) অথবা আপনার মোবাইল নম্বরটি নিচে লিখুন।
+        </p>
+    </div>
+
+    <!-- ১. অর্ডার সার্চ ইনপুট ফর্ম -->
+    <div class="track-search-card">
+        <form method="POST" action="{{ url_for('track_order') }}" class="track-form">
+            <div class="track-input-group">
+                <label for="trackCodeInput" class="sr-only">অর্ডার কোড বা ফোন</label>
+                <div class="track-input-wrapper">
+                    <span class="track-icon">📦</span>
+                    <input 
+                        type="text" 
+                        id="trackCodeInput" 
+                        name="code" 
+                        value="{{ query_code }}" 
+                        placeholder="অর্ডার কোড লিখুন (যেমন: BR-84920) অথবা ফোন নম্বর" 
+                        required 
+                        autocomplete="off"
+                    >
+                </div>
+                <!-- এই বাটনে ক্লিক করলে ডাটাবেজে অর্ডার সার্চ করা হবে -->
+                <button type="submit" class="btn btn-primary btn-large" id="trackSearchBtn">
+                    <span>স্ট্যাটাস দেখুন ➔</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ত্রুটি বা অর্ডার খুঁজে না পেলে মেসেজ -->
+    {% if error %}
+    <div class="track-error-alert" role="alert">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text">
+            <h4>অর্ডারটি পাওয়া যায়নি</h4>
+            <p>{{ error }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ২. যদি অর্ডার পাওয়া যায় তবে ট্র্যাকিং ডিটেইলস ডিসপ্লে -->
+    {% if order %}
+    <div class="track-result-wrapper">
+        
+        <!-- অর্ডার কার্ড হেডার (কোড, তারিখ ও স্ট্যাটাস ব্যাজ) -->
+        <div class="track-status-summary-card">
+            <div class="summary-top-row">
+                <div>
+                    <span class="order-badge-tag">অর্ডার কোড: <strong>{{ order.order_code }}</strong></span>
+                    <h2 class="tracking-order-title">অর্ডার স্ট্যাটাস ওভারভিউ</h2>
+                    <span class="order-created-time">অর্ডারের সময়: {{ order.created_at }}</span>
+                </div>
+                <div>
+                    <!-- বর্তমান স্ট্যাটাস ব্যাজ -->
+                    <span class="status-pill status-{{ order.status|lower }}">
+                        ● স্ট্যাটাস: {{ order.status }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- ৪-ধাপের ভিজ্যুয়াল প্রগ্রেস ট্র্যাকার (Interactive Stepper) -->
+            <!-- Pending -> Processing -> Shipped -> Delivered -->
+            <div class="tracking-stepper">
+                
+                <!-- ধাপ ১: অর্ডার প্লেসড -->
+                {% set s = order.status %}
+                <div class="step-node {% if s in ['Pending', 'Processing', 'Shipped', 'Delivered'] %}active completed{% endif %}">
+                    <div class="step-circle">✓</div>
+                    <div class="step-content">
+                        <strong>অর্ডার গৃহীত</strong>
+                        <small>অর্ডার সিস্টেমভুক্ত হয়েছে</small>
+                    </div>
+                </div>
+
+                <div class="step-line {% if s in ['Processing', 'Shipped', 'Delivered'] %}active{% endif %}"></div>
+
+                <!-- ধাপ ২: প্যাকেজিং ও কোয়ালিটি চেক -->
+                <div class="step-node {% if s in ['Processing', 'Shipped', 'Delivered'] %}active {% if s in ['Shipped', 'Delivered'] %}completed{% endif %}{% endif %}">
+                    <div class="step-circle">{% if s in ['Shipped', 'Delivered'] %}✓{% else %}২{% endif %}</div>
+                    <div class="step-content">
+                        <strong>টেস্টিং ও প্যাকেজিং</strong>
+                        <small>OEM কোয়ালিটি ভেরিফিকেশন</small>
+                    </div>
+                </div>
+
+                <div class="step-line {% if s in ['Shipped', 'Delivered'] %}active{% endif %}"></div>
+
+                <!-- ধাপ ৩: কুরিয়ারে হস্তান্তর -->
+                <div class="step-node {% if s in ['Shipped', 'Delivered'] %}active {% if s == 'Delivered' %}completed{% endif %}{% endif %}">
+                    <div class="step-circle">{% if s == 'Delivered' %}✓{% else %}৩{% endif %}</div>
+                    <div class="step-content">
+                        <strong>কুরিয়ারে হস্তান্তর</strong>
+                        <small>পথে রয়েছে (In Transit)</small>
+                    </div>
+                </div>
+
+                <div class="step-line {% if s == 'Delivered' %}active{% endif %}"></div>
+
+                <!-- ধাপ ৪: ডেলিভারি সম্পন্ন -->
+                <div class="step-node {% if s == 'Delivered' %}active completed{% endif %}">
+                    <div class="step-circle">{% if s == 'Delivered' %}✓{% else %}৪{% endif %}</div>
+                    <div class="step-content">
+                        <strong>ডেলিভারি সম্পন্ন</strong>
+                        <small>গ্রাহক পণ্য পেয়েছেন</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ৩. কাস্টমার ও ডেলিভারি বিস্তারিত গ্রিড -->
+        <div class="track-info-grid">
+            
+            <!-- কলাম ১: ডেলিভারির বিবরণ -->
+            <div class="track-detail-card">
+                <h3>📍 ডেলিভারি তথ্য</h3>
+                <ul class="track-meta-list">
+                    <li>
+                        <span>প্রাপকের নাম:</span>
+                        <strong>{{ order.customer_name }}</strong>
+                    </li>
+                    <li>
+                        <span>মোবাইল নম্বর:</span>
+                        <strong>{{ order.customer_phone }}</strong>
+                    </li>
+                    <li>
+                        <span>ডেলিভারি শহর:</span>
+                        <strong>{{ order.city }}</strong>
+                    </li>
+                    <li>
+                        <span>সম্পূর্ণ ঠিকানা:</span>
+                        <p class="address-box">{{ order.shipping_address }}</p>
+                    </li>
+                    <li>
+                        <span>পেমেন্ট পদ্ধতি:</span>
+                        <strong class="pay-method-pill">{{ order.payment_method }}</strong>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- কলাম ২: অর্ডারের প্রোডাক্টসমূহ ও ফাইনাল হিসেব -->
+            <div class="track-detail-card">
+                <h3>🛍️ পার্সেলের পণ্যসমূহ</h3>
+                <div class="track-items-list">
+                    {% for item in items %}
+                    <div class="track-item-card">
+                        <img src="{{ item.image }}" alt="{{ item.product_name }}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                        <div class="track-item-info">
+                            <span class="badge part-badge">{{ item.category }}</span>
+                            <h4>{{ item.product_name }}</h4>
+                            <div class="track-item-math">
+                                ৳{{ '%.0f'|format(item.price) }} × {{ item.quantity }} পিস
+                            </div>
+                        </div>
+                        <div class="track-item-total">
+                            ৳{{ '%.0f'|format(item.price * item.quantity) }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <hr class="summary-divider">
+
+                <div class="track-invoice-totals">
+                    <div class="total-row">
+                        <span>ডেলিভারি চার্জ:</span>
+                        <span>৳{{ '%.0f'|format(order.delivery_fee) }}</span>
+                    </div>
+                    {% if order.discount and order.discount > 0 %}
+                    <div class="total-row discount-row" style="color:var(--success);">
+                        <span>কুপন ছাড় ({{ order.coupon_code or 'PROMO' }}):</span>
+                        <span>−৳{{ '%.0f'|format(order.discount) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="total-row grand-row">
+                        <span>সর্বমোট প্রদেয়:</span>
+                        <strong class="grand-price">৳{{ '%.0f'|format(order.total) }}</strong>
+                    </div>
+                </div>
+
+                <div class="help-box-mini">
+                    <span>💡 পার্সেল নিয়ে কোনো প্রশ্ন থাকলে কল করুন: <strong>+880 1700-000000</strong></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

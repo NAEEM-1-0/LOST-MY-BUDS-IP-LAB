@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/help.html
+     বিবরণ: গ্রাহক সহায়তা ও মডেল ম্যাচিং রিকোয়েস্ট পেজ - কনফিউশন দূর করা,
+           সঠিক মডেল কোড খুঁজে বের করতে সহায়তা এবং সাপোর্ট টিমের সাথে সরাসরি যোগাযোগ।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}মডেল সহায়তা ও সাপোর্ট — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="help-page-wrap">
+    
+    <div class="help-header-title text-center">
+        <span class="section-subtitle">আমাদের বিশেষজ্ঞ টিম সহায়তা করবে</span>
+        <h1 class="page-title">মডেল ম্যাচিং ও টেকনিক্যাল হেল্প</h1>
+        <p class="help-intro-text">
+            আপনার ইয়ারবাডের সঠিক জেনারেশন বা মডেল কোড বুঝতে না পারলে নিচের ফর্মটি পূরণ করুন। 
+            আমরা আপনার সেটের সাথে ১০০% মিল রেখে পার্টস খুঁজে দেব।
+        </p>
+    </div>
+
+    <!-- রিকোয়েস্ট সাবমিট সফল হলে মেসেজ -->
+    {% if success %}
+    <div class="help-success-card text-center">
+        <div class="help-success-icon">✓</div>
+        <h2>আপনার রিকোয়েস্ট সফলভাবে গ্রহণ করা হয়েছে!</h2>
+        <p>আমাদের টেকনিক্যাল সাপোর্ট টিম দ্রুত আপনার সাথে ফোনে বা হোয়াটসঅ্যাপে যোগাযোগ করে সঠিক পার্টটি নিশ্চিত করবে।</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">হোমপেজে ফিরে যান</a>
+    </div>
+    {% else %}
+    <div class="help-grid-layout">
+        
+        <!-- বাম পাশ: হেল্প ফর্ম -->
+        <div class="help-form-card">
+            
+            {% if error %}
+            <div class="help-error-alert" role="alert">
+                <span>⚠️ {{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('help_request') }}" class="help-main-form">
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="helpName">আপনার নাম <span class="required">*</span></label>
+                        <input type="text" id="helpName" name="name" placeholder="নাম লিখুন" required>
+                    </div>
+                    <div class="form-group half">
+                        <label for="helpPhone">ফোন নম্বর <span class="required">*</span></label>
+                        <input type="tel" id="helpPhone" name="phone" placeholder="01XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="helpEmail">ইমেইল ঠিকানা (অপশনাল)</label>
+                    <input type="email" id="helpEmail" name="email" placeholder="example@mail.com">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="helpBrand">ইয়ারবাডের ব্র্যান্ড <span class="required">*</span></label>
+                        <select id="helpBrand" name="brand" class="form-select" required>
+                            <option value="">-- ব্র্যান্ড নির্বাচন করুন --</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Sony">Sony</option>
+                            <option value="Nothing">Nothing</option>
+                            <option value="OnePlus">OnePlus</option>
+                            <option value="JBL">JBL</option>
+                            <option value="Google">Google</option>
+                            <option value="Other">অন্যান্য (Other)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group half">
+                        <label for="helpModel">মডেল নাম বা আনুমানিক মডেল <span class="required">*</span></label>
+                        <input type="text" id="helpModel" name="model" placeholder="যেমন: AirPods Pro 2 / Galaxy Buds 2" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="helpMissingPart">কোন অংশটি হারিয়েছেন?</label>
+                    <select id="helpMissingPart" name="missing_part" class="form-select">
+                        <option value="Left Bud">লেফট ইয়ারবাড (Left Bud)</option>
+                        <option value="Right Bud">রাইট ইয়ারবাড (Right Bud)</option>
+                        <option value="Charging Case">চার্জিং কেস (Charging Case)</option>
+                        <option value="Both Buds">উভয় বাড কিন্তু কেস আছে</option>
+                        <option value="Other">অন্যান্য সমস্যা</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="helpMessage">আপনার সমস্যা বা বিস্তারিত বিবরণ <span class="required">*</span></label>
+                    <textarea id="helpMessage" name="message" rows="4" placeholder="আপনার বাডের মডেল নম্বর কোথায় লেখা আছে বুঝতে না পারলে বা পেয়ারিং নিয়ে কোনো জিজ্ঞাসা থাকলে লিখুন..." required></textarea>
+                </div>
+
+                <!-- সাবমিট বাটন -->
+                <button type="submit" class="btn btn-primary btn-large btn-block" id="submitHelpBtn">
+                    <span>রিকোয়েস্ট সাবমিট করুন ➔</span>
+                </button>
+
+            </form>
+        </div>
+
+        <!-- ডান পাশ: মডেল কোড বের করার টিপস -->
+        <aside class="help-tips-sidebar">
+            <div class="tips-card">
+                <h3>💡 কীভাবে সঠিক মডেল কোড পাবেন?</h3>
+                <div class="tip-item">
+                    <strong>১. চার্জিং কেসের ঢাকনার ভেতর:</strong>
+                    <p>অ্যাপল ও স্যামসাং কেসের ঢাকনা খুললে ভেতরে ছোট অক্ষরে মডেল কোড (যেমন Model A2698, SM-R510) খোদাই করা থাকে।</p>
+                </div>
+                <div class="tip-item">
+                    <strong>২. ফোনের ব্লুটুথ সেটিংসে:</strong>
+                    <p>আপনার ফোনের Settings > Bluetooth এ গিয়ে কানেক্টেড বাডের নামের পাশে ট্যাপ করলে "Model Name" ও "Model Number" দেখতে পাবেন।</p>
+                </div>
+                <div class="tip-item">
+                    <strong>৩. বক্স বা ম্যানুয়ালে:</strong>
+                    <p>আপনার কাছে যদি আদি বক্সটি থাকে, তবে পেছনের বারকোডের উপরে পরিষ্কার মডেল ও সিরিয়াল নম্বর উল্লেখ থাকে।</p>
+                </div>
+            </div>
+
+            <div class="hotline-card">
+                <h4>জরুরি যোগাযোগ</h4>
+                <p>হটলাইন: <strong>+880 1700-000000</strong></p>
+                <p>সরাসরি হোয়াটসঅ্যাপ মেসেজ দিতে পারেন সকাল ১০টা থেকে রাত ১০টা পর্যন্ত।</p>
+            </div>
+        </aside>
+
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

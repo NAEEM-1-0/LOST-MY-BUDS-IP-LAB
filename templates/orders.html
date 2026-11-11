@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/orders.html
+     বিবরণ: গ্রাহকের পূর্ববর্তী সমস্ত অর্ডারের ইতিহাস, ট্র্যাকিং স্ট্যাটাস,
+           পণ্যের বিস্তারিত ও ডেলিভারি বিবরণী পেজ।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}আমার অর্ডারসমূহ — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="orders-page-wrap">
+    
+    <div class="orders-header-title">
+        <span class="section-subtitle">আপনার কেনাকাটার ইতিহাস</span>
+        <h1 class="page-title">আমার অর্ডারসমূহ (Order History)</h1>
+    </div>
+
+    {% if not orders %}
+    <!-- কোনো অর্ডার না থাকলে প্রদর্শিত হবে -->
+    <div class="empty-orders-box">
+        <div class="empty-icon">📦</div>
+        <h2>আপনি এখনো কোনো অর্ডার করেননি!</h2>
+        <p>আপনার হারিয়ে যাওয়া ইয়ারবাডের বিকল্প পার্টটি সহজেই খুঁজে নিন এবং অর্ডার করুন।</p>
+        <a href="{{ url_for('index') }}#shop" class="btn btn-primary btn-large">
+            পার্টস ক্যাটালগ দেখুন <span>→</span>
+        </a>
+    </div>
+    {% else %}
+    <!-- অর্ডারের কার্ড তালিকা -->
+    <div class="orders-list-cards">
+        {% for o in orders %}
+        <article class="order-card-item">
+            
+            <!-- কার্ডের টপ বার: অর্ডার আইডি, তারিখ ও স্ট্যাটাস ব্যাজ -->
+            <div class="order-card-header">
+                <div>
+                    <span class="order-code-badge">অর্ডার কোড: <strong>{{ o.order_code or ('#BR-' ~ o.id) }}</strong></span>
+                    <span class="order-date-text">তারিখ: {{ o.created_at }}</span>
+                </div>
+                
+                <div class="order-header-right-actions" style="display:flex; align-items:center; gap:8px;">
+                    <!-- লাইভ ট্র্যাকিং বাটন: ক্লিক করলে সরাসরি ৪-ধাপের ট্র্যাকার খুলবে -->
+                    <a href="{{ url_for('track_order', code=o.order_code) }}" class="btn btn-sm btn-primary" title="লাইভ পার্সেল ট্র্যাক করুন" style="padding:4px 10px; font-size:0.75rem;">
+                        📦 ট্র্যাক করুন ➔
+                    </a>
+                    
+                    <!-- ডাইনামিক স্ট্যাটাস পিল (Pending/Processing/Shipped/Delivered) -->
+                    <span class="status-badge status-{{ o.status|lower }}">
+                        {% if o.status == 'Pending' %}⏳ পেন্ডিং
+                        {% elif o.status == 'Processing' %}⚡ প্রসেসিং
+                        {% elif o.status == 'Shipped' %}🚚 কুরিয়ারে
+                        {% elif o.status == 'Delivered' %}✅ সম্পন্ন
+                        {% else %}{{ o.status }}{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <!-- অর্ডারে থাকা আইটেমগুলোর বিস্তারিত লিস্ট -->
+            <div class="order-items-list-body">
+                {% for it in order_items.get(o.id, []) %}
+                <div class="order-item-subrow">
+                    <div class="order-item-left">
+                        <span class="item-tag">{{ it.category }}</span>
+                        <strong>{{ it.product_name }}</strong>
+                    </div>
+                    <div class="order-item-qty">
+                        {{ it.quantity }} পিস × ৳{{ '%.0f'|format(it.price) }}
+                    </div>
+                    <div class="order-item-total">
+                        ৳{{ '%.0f'|format(it.price * it.quantity) }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- কার্ড ফুটার: ডেলিভারির ঠিকানা ও সর্বমোট মূল্য -->
+            <div class="order-card-footer">
+                <div class="delivery-destination">
+                    <span class="meta-label">প্রাপক ও ঠিকানা:</span>
+                    <p>{{ o.customer_name }} ({{ o.customer_phone }}) · {{ o.shipping_address }}, {{ o.city }}</p>
+                </div>
+                <div class="order-total-block">
+                    <span class="total-label">সর্বমোট পরিশোধিত/প্রদেয়:</span>
+                    <strong class="total-amount">৳{{ '%.0f'|format(o.total) }}</strong>
+                    <small>পেমেন্ট: {{ o.payment_method }}</small>
+                </div>
+            </div>
+
+        </article>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="snGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="snBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#27272a"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <filter id="snShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#f59e0b" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="400" fill="#0f172a" rx="16"/>
+  <circle cx="200" cy="200" r="160" fill="url(#snGlow)"/>
+
+  <g transform="translate(200, 200) scale(1, 1) translate(-200, -200)" filter="url(#snShadow)">
+    <!-- Sony Ergonomic Body -->
+    <path d="M 150 160 C 140 120, 240 120, 260 170 C 270 215, 220 260, 170 240 C 145 230, 150 190, 150 160 Z" fill="url(#snBody)" stroke="#3f3f46" stroke-width="2"/>
+    <!-- Gold / Copper Mic Accent (Sony Signature) -->
+    <circle cx="245" cy="170" r="14" fill="#d97706" stroke="#b45309" stroke-width="2"/>
+    <circle cx="245" cy="170" r="7" fill="#18181b"/>
+    <!-- Polyurethane Foam Tip -->
+    <path d="M 145 155 C 115 150, 115 185, 145 190 Z" fill="#18181b" stroke="#3f3f46" stroke-width="2"/>
+    <!-- Sony Branding mark -->
+    <text x="200" y="170" font-family="sans-serif" font-size="12" font-weight="bold" fill="#a1a1aa" text-anchor="middle">SONY</text>
+    <text x="200" y="195" font-family="sans-serif" font-size="15" font-weight="bold" fill="#f59e0b" text-anchor="middle">L</text>
+  </g>
+
+  <rect x="24" y="24" width="95" height="26" rx="6" fill="#78350f" fill-opacity="0.4"/>
+  <text x="71" y="41" font-family="sans-serif" font-size="11" font-weight="bold" fill="#fbbf24" text-anchor="middle">Sony Hi-Res</text>
+  <text x="350" y="42" font-family="sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">L</text>
+</svg>

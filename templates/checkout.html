@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/checkout.html
+     বিবরণ: চেকআউট পেজ - গ্রাহকের নাম, ফোন নম্বর, পূর্ণাঙ্গ ডেলিভারি ঠিকানা,
+           সিটি সিলেক্টর (ঢাকা/ঢাকার বাইরে), পেমেন্ট মেথড নির্বাচন এবং অর্ডার সামারি।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}চেকআউট — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="checkout-page-wrap">
+
+    <div class="checkout-header-title">
+        <span class="section-subtitle">নিরাপদ ও সহজ অর্ডার প্রক্রিয়া</span>
+        <h1 class="page-title">চেকআউট সম্পন্ন করুন</h1>
+    </div>
+
+    <!-- ত্রুটি বা এরর মেসেজ প্রদর্শনের জায়গা -->
+    {% if error %}
+    <div class="checkout-error-alert" role="alert">
+        <span>⚠️ {{ error }}</span>
+    </div>
+    {% endif %}
+
+    <div class="checkout-grid-layout">
+        
+        <!-- বাম পাশ: ডেলিভারি ও পেমেন্ট ফর্ম -->
+        <div class="checkout-form-column">
+            <form method="POST" action="{{ url_for('checkout') }}" class="checkout-main-form" id="checkoutForm">
+                
+                <!-- ধাপ ১: গ্রাহকের ব্যক্তিগত তথ্য -->
+                <div class="checkout-section-card">
+                    <div class="card-step-header">
+                        <span class="step-num">১</span>
+                        <h3>যোগাযোগের তথ্য</h3>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="custName">আপনার নাম <span class="required">*</span></label>
+                            <input type="text" id="custName" name="name" value="{{ user.name if user else '' }}" placeholder="আপনার পূর্ণ নাম লিখুন" required autocomplete="name">
+                        </div>
+                        <div class="form-group half">
+                            <label for="custPhone">ফোন নম্বর <span class="required">*</span></label>
+                            <input type="tel" id="custPhone" name="phone" value="{{ user.phone if user else '' }}" placeholder="01XXXXXXXXX" pattern="[0-9+ -]{11,15}" required autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custEmail">ইমেইল ঠিকানা (অপশনাল)</label>
+                        <input type="email" id="custEmail" name="email" value="{{ user.email if user else '' }}" placeholder="আপনার ইমেইল (অর্ডার ট্র্যাকিংয়ের জন্য)" autocomplete="email">
+                    </div>
+                </div>
+
+                <!-- ধাপ ২: ডেলিভারির ঠিকানা -->
+                <div class="checkout-section-card">
+                    <div class="card-step-header">
+                        <span class="step-num">২</span>
+                        <h3>ডেলিভারির ঠিকানা</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shippingCity">শহর / ডেলিভারি এলাকা <span class="required">*</span></label>
+                        <select id="shippingCity" name="city" class="form-select" onchange="updateDeliveryFee(this.value)" required>
+                            <option value="Dhaka" selected>ঢাকা সিটি (ডেলিভারি চার্জ ৳৬০)</option>
+                            <option value="Outside Dhaka">ঢাকার বাইরে (ডেলিভারি চার্জ ৳১২০)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shippingAddress">বিস্তারিত ঠিকানা <span class="required">*</span></label>
+                        <textarea id="shippingAddress" name="address" rows="3" placeholder="বাড়ি নং, রোড নং, এলাকা, থানা ও জেলা উল্লেখ করুন" required>{{ user.address if user else '' }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orderNotes">ডেলিভারি নোট বা বিশেষ নির্দেশনা (অপশনাল)</label>
+                        <input type="text" id="orderNotes" name="notes" placeholder="যেমন: বিকাল ৫টার পর ডেলিভারি দিলে ভালো হয়">
+                    </div>
+                </div>
+
+                <!-- ধাপ ৩: পেমেন্ট মেথড নির্বাচন -->
+                <div class="checkout-section-card">
+                    <div class="card-step-header">
+                        <span class="step-num">৩</span>
+                        <h3>পেমেন্ট মেথড নির্বাচন করুন</h3>
+                    </div>
+
+                    <div class="payment-options-grid">
+                        
+                        <!-- ক্যাশ অন ডেলিভারি অপশন -->
+                        <label class="payment-option-card selected">
+                            <input type="radio" name="payment_method" value="Cash on Delivery" checked onchange="handlePaymentChange(this)">
+                            <div class="payment-card-body">
+                                <span class="pay-icon">💵</span>
+                                <div class="pay-meta">
+                                    <strong>ক্যাশ অন ডেলিভারি (COD)</strong>
+                                    <small>পার্সেল হাতে পেয়ে ডেলিভারিম্যানকে টাকা পরিশোধ করুন</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- বিকাশ অনলাইন পেমেন্ট অপশন -->
+                        <label class="payment-option-card">
+                            <input type="radio" name="payment_method" value="bKash" onchange="handlePaymentChange(this)">
+                            <div class="payment-card-body">
+                                <span class="pay-icon">📱</span>
+                                <div class="pay-meta">
+                                    <strong>বিকাশ পেমেন্ট (bKash)</strong>
+                                    <small>ডেলিভারির পূর্বে বিকাশ মার্চেন্টে সরাসরি সেন্ড মানি</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- নগদ অনলাইন পেমেন্ট অপশন -->
+                        <label class="payment-option-card">
+                            <input type="radio" name="payment_method" value="Nagad" onchange="handlePaymentChange(this)">
+                            <div class="payment-card-body">
+                                <span class="pay-icon">💳</span>
+                                <div class="pay-meta">
+                                    <strong>নগদ পেমেন্ট (Nagad)</strong>
+                                    <small>নগদ ওয়ালেট থেকে দ্রুত ও নিরাপদে পেমেন্ট</small>
+                                </div>
+                            </div>
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- অর্ডার সাবমিট বাটন -->
+                <div class="checkout-submit-wrap">
+                    <!-- এই বাটনে ক্লিক করলে ফর্ম ভ্যালিডেশন চেক হবে এবং ডাটাবেজে নতুন অর্ডার তৈরি হবে -->
+                    <button type="submit" class="btn btn-primary btn-large btn-block" id="placeOrderBtn">
+                        <span>অর্ডার সম্পন্ন করুন ➔</span>
+                    </button>
+                    <p class="submit-disclaimer">
+                        অর্ডার প্লেস করার মাধ্যমে আপনি আমাদের শর্তাবলী ও ৯০ দিনের রিপ্লেসমেন্ট গ্যারান্টিতে সম্মতি দিচ্ছেন।
+                    </p>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- ডান পাশ: অর্ডারের প্রোডাক্ট তালিকা ও ফাইনাল হিসেব -->
+        <aside class="checkout-summary-column">
+            <div class="summary-card sticky-card">
+                <h3 class="summary-card-title">আপনার অর্ডার আইটেমস</h3>
+
+                <!-- আইটেম প্রিভিউ লিস্ট -->
+                <div class="checkout-items-preview">
+                    {% for it in items %}
+                    <div class="preview-item-row">
+                        <div class="preview-img-box">
+                            <img src="{{ it.product.image }}" alt="{{ it.product.name }}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                            <span class="preview-qty-badge">{{ it.qty }}</span>
+                        </div>
+                        <div class="preview-item-text">
+                            <strong>{{ it.product.name }}</strong>
+                            <small>{{ it.product.category }}</small>
+                        </div>
+                        <div class="preview-item-price">
+                            ৳{{ '%.0f'|format(it.subtotal) }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <hr class="summary-divider">
+
+                <div class="summary-line">
+                    <span>পণ্যের মূল্য (Subtotal):</span>
+                    <strong id="summarySubtotal" data-val="{{ subtotal }}">৳{{ '%.0f'|format(subtotal) }}</strong>
+                </div>
+
+                <div class="summary-line">
+                    <span>ডেলিভারি ফি:</span>
+                    <strong id="summaryDeliveryFee">
+                        {% if delivery_fee == 0 %}
+                        <span class="free-text">ফ্রি (Free)</span>
+                        {% else %}
+                        ৳{{ '%.0f'|format(delivery_fee) }}
+                        {% endif %}
+                    </strong>
+                </div>
+
+                {% if coupon_code %}
+                <div class="summary-line discount-line">
+                    <span>কুপন ছাড় ({{ coupon_code }}):</span>
+                    <strong class="discount-amount" id="summaryDiscount" data-val="{{ discount }}">−৳{{ '%.0f'|format(discount) }}</strong>
+                </div>
+                {% endif %}
+
+                <div class="summary-line total-line">
+                    <span>সর্বমোট প্রদেয় টাকা:</span>
+                    <strong class="grand-total-price" id="summaryGrandTotal">৳{{ '%.0f'|format(grand_total) }}</strong>
+                </div>
+
+                <div class="guarantee-badge-box">
+                    <span>🛡️ ১০০% আসল পার্টস ও ৯০ দিনের রিপ্লেসমেন্ট নিশ্চয়তা</span>
+                </div>
+
+            </div>
+        </aside>
+
+    </div>
+
+</div>
+
+<script>
+    // এই ফাংশনটি ডেলিভারি এলাকা (ঢাকা/ঢাকার বাইরে) পরিবর্তনের সাথে সাথে ফি ও গ্র্যান্ড টোটাল আপডেট করে
+    function updateDeliveryFee(city) {
+        const subtotal = parseFloat(document.getElementById('summarySubtotal').getAttribute('data-val')) || 0;
+        const discountEl = document.getElementById('summaryDiscount');
+        const discount = discountEl ? (parseFloat(discountEl.getAttribute('data-val')) || 0) : 0;
+        let fee = (city === 'Dhaka') ? 60 : 120;
+
+        // ৳৫০০০ টাকার বেশি হলে ফ্রি ডেলিভারি
+        if (subtotal >= 5000) {
+            fee = 0;
+        }
+
+        const deliveryEl = document.getElementById('summaryDeliveryFee');
+        if (fee === 0) {
+            deliveryEl.innerHTML = '<span class="free-text">ফ্রি (Free)</span>';
+        } else {
+            deliveryEl.innerText = '৳' + fee;
+        }
+
+        const grandTotal = Math.max(0, subtotal - discount) + fee;
+        document.getElementById('summaryGrandTotal').innerText = '৳' + Math.round(grandTotal);
+    }
+
+    // পেমেন্ট অপশন পরিবর্তনের স্টাইল হাইলাইটার
+    function handlePaymentChange(radio) {
+        document.querySelectorAll('.payment-option-card').forEach(card => card.classList.remove('selected'));
+        radio.closest('.payment-option-card').classList.add('selected');
+    }
+
+    // ডাবল ক্লিক ঠেকানোর জন্য সাবমিট করার পর বাটন ডিসেবল করা
+    document.getElementById('checkoutForm').addEventListener('submit', function() {
+        const btn = document.getElementById('placeOrderBtn');
+        btn.disabled = true;
+        btn.innerHTML = 'অর্ডার প্রসেস হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন';
+    });
+</script>
+{% endblock %}

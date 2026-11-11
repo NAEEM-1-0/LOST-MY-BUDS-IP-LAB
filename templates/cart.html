@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/cart.html
+     বিবরণ: সম্পূর্ণ কার্ট / শপিং ব্যাগ পেজ - আইটেম লিস্ট, পরিমাণ আপডেট,
+           ডেলিভারি চার্জ ক্যালকুলেশন, কুপন/ফ্রি ডেলিভারি প্রোগ্রেস ও চেকআউট বাটন।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}আপনার ব্যাগ — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="cart-page-wrap">
+    
+    <div class="cart-header-title">
+        <span class="section-subtitle">চেকআউটের পূর্বে রিভিউ করুন</span>
+        <h1 class="page-title">আপনার শপিং ব্যাগ</h1>
+    </div>
+
+    {% if not items %}
+    <!-- কার্ট খালি থাকলে এই অংশটি প্রদর্শিত হবে -->
+    <div class="empty-cart-state-box">
+        <div class="empty-icon">🛍️</div>
+        <h2>আপনার ব্যাগ বর্তমানে খালি!</h2>
+        <p>আপনার হারিয়ে যাওয়া ইয়ারবাড বা কেসটি খুঁজে বের করতে আমাদের ক্যাটালগ ঘুরে দেখুন।</p>
+        <a href="{{ url_for('index') }}#shop" class="btn btn-primary btn-large">
+            পার্টস ক্যাটালগ দেখুন <span>→</span>
+        </a>
+    </div>
+    {% else %}
+    <!-- কার্টে পণ্য থাকলে দুই কলামের লেআউট প্রদর্শিত হবে -->
+    <div class="cart-main-grid">
+        
+        <!-- বাম পাশ: কার্টের আইটেম তালিকা -->
+        <div class="cart-items-column">
+            
+            <!-- ফ্রি ডেলিভারি ব্যানার -->
+            <div class="cart-alert-strip">
+                {% if subtotal >= 5000 %}
+                <span>🎉 অভিনন্দন! আপনি <strong>ফ্রি ডেলিভারি</strong> সুবিধার আওতায় পড়েছেন।</span>
+                {% else %}
+                <span>🚚 আর মাত্র <strong>৳{{ '%.0f'|format(5000 - subtotal) }}</strong> টাকার অর্ডার করলে ডেলিভারি একদম ফ্রি!</span>
+                {% endif %}
+            </div>
+
+            <div class="cart-items-table-card">
+                {% for item in items %}
+                <div class="cart-item-row" data-pid="{{ item.product.id }}">
+                    
+                    <!-- প্রোডাক্ট ছবি -->
+                    <div class="cart-item-img-box">
+                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                    </div>
+
+                    <!-- প্রোডাক্টের নাম ও ক্যাটাগরি -->
+                    <div class="cart-item-details">
+                        <span class="item-brand-tag">{{ item.product.brand }} · {{ item.product.category }}</span>
+                        <h3 class="item-name">
+                            <a href="{{ url_for('product', pid=item.product.id) }}">{{ item.product.name }}</a>
+                        </h3>
+                        <div class="item-unit-price">
+                            প্রতি পিস: <strong>৳{{ '%.0f'|format(item.product.price) }}</strong>
+                        </div>
+                    </div>
+
+                    <!-- কোয়ান্টিটি আপডেট ফর্ম -->
+                    <div class="cart-item-qty-box">
+                        <form method="POST" action="{{ url_for('update_cart', pid=item.product.id) }}" class="qty-form">
+                            <label class="sr-only" for="qty-{{ item.product.id }}">পরিমাণ</label>
+                            <div class="quantity-input-stepper mini">
+                                <!-- পরিমাণ কমানোর বাটন -->
+                                <button type="button" class="stepper-btn" onclick="decrementCartRow({{ item.product.id }})">−</button>
+                                <input type="number" name="quantity" id="qty-{{ item.product.id }}" value="{{ item.qty }}" min="1" max="{{ item.product.stock }}" readonly>
+                                <!-- পরিমাণ বাড়ানোর বাটন -->
+                                <button type="button" class="stepper-btn" onclick="incrementCartRow({{ item.product.id }}, {{ item.product.stock }})">+</button>
+                            </div>
+                            <!-- সেভ / আপডেট বাটন -->
+                            <button type="submit" class="btn-update-qty" title="পরিমাণ আপডেট করুন">↻</button>
+                        </form>
+                    </div>
+
+                    <!-- সাবটোটাল -->
+                    <div class="cart-item-subtotal-box">
+                        <span class="subtotal-label">মোট:</span>
+                        <strong class="item-subtotal">৳{{ '%.0f'|format(item.subtotal) }}</strong>
+                    </div>
+
+                    <!-- আইটেম মুছে ফেলার রিমুভ বাটন -->
+                    <div class="cart-item-remove-box">
+                        <form method="POST" action="{{ url_for('remove_from_cart', pid=item.product.id) }}">
+                            <button type="submit" class="btn-remove-item" title="ব্যাগ থেকে বাদ দিন" aria-label="Remove item">
+                                🗑️
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-bottom-actions">
+                <a href="{{ url_for('index') }}#shop" class="btn btn-outline">
+                    ← আরও কেনাকাটা করুন
+                </a>
+            </div>
+
+        </div>
+
+        <!-- ডান পাশ: অর্ডার সামারি ও চেকআউট বক্স -->
+        <aside class="cart-summary-column">
+            <div class="summary-card">
+                <h3 class="summary-card-title">অর্ডার সামারি</h3>
+                
+                <div class="summary-line">
+                    <span>পণ্যের মোট মূল্য (Subtotal):</span>
+                    <strong>৳{{ '%.0f'|format(subtotal) }}</strong>
+                </div>
+
+                <div class="summary-line">
+                    <span>ডেলিভারি চার্জ:</span>
+                    {% if delivery_fee == 0 %}
+                    <span class="free-text">ফ্রি (Free)</span>
+                    {% else %}
+                    <strong>৳{{ '%.0f'|format(delivery_fee) }}</strong>
+                    {% endif %}
+                </div>
+
+                <!-- কুপন বা প্রোমো কোড প্রয়োগ সেকশন -->
+                <div class="coupon-section-box">
+                    {% if coupon_code %}
+                        <div class="applied-coupon-row">
+                            <div class="coupon-badge-wrap">
+                                <span class="coupon-code-badge">🏷️ {{ coupon_code }}</span>
+                                <span class="coupon-desc-text">{{ coupon_desc }}</span>
+                            </div>
+                            <!-- কুপন রিমুভ করার বাটন -->
+                            <button type="button" class="btn-remove-coupon" onclick="removeCoupon()" title="কুপন বাদ দিন">✕</button>
+                        </div>
+                    {% else %}
+                        <div class="coupon-form-wrap">
+                            <label for="couponInput" class="coupon-label">ডিসকাউন্ট কুপন কোড:</label>
+                            <div class="coupon-input-row">
+                                <input type="text" id="couponInput" placeholder="BUDS10 বা FREESHIP" autocomplete="off" style="text-transform:uppercase;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="applyCouponBtn" onclick="applyCoupon()">প্রয়োগ</button>
+                            </div>
+                            <div class="coupon-quick-hints">
+                                <span>কুপন কোড: <code>BUDS10</code> (১০% ছাড়) বা <code>FREESHIP</code></span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if discount and discount > 0 %}
+                <div class="summary-line discount-line">
+                    <span>কুপন ডিসকাউন্ট ({{ coupon_code }}):</span>
+                    <strong class="discount-amount">−৳{{ '%.0f'|format(discount) }}</strong>
+                </div>
+                {% endif %}
+
+                <div class="summary-line total-line">
+                    <span>সর্বমোট প্রদেয়:</span>
+                    <strong class="grand-total-price">৳{{ '%.0f'|format(grand_total) }}</strong>
+                </div>
+
+                <!-- চেকআউট অ্যাকশন বাটন -->
+                <!-- এই বাটনে ক্লিক করলে চেকআউট পেজে নিয়ে যাবে -->
+                <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-large btn-block" id="proceedToCheckoutBtn">
+                    চেকআউটে যান <span>→</span>
+                </a>
+
+                <!-- ট্রাস্ট ও পেমেন্ট ইনফো নোট -->
+                <div class="summary-security-notes">
+                    <div class="sec-item">
+                        <span>💵</span>
+                        <span>ক্যাশ অন ডেলিভারি উপলব্ধ</span>
+                    </div>
+                    <div class="sec-item">
+                        <span>🛡️</span>
+                        <span>৯০ দিনের রিপ্লেসমেন্ট ওয়ারেন্টি</span>
+                    </div>
+                    <div class="sec-item">
+                        <span>⚡</span>
+                        <span>২৪-৪৮ ঘণ্টার মধ্যে ফাস্ট হোম ডেলিভারি</span>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    // এই ফাংশনটি ইনপুটের সংখ্যা ১ কমায় এবং ফর্ম সাবমিট করে
+    function decrementCartRow(pid) {
+        const input = document.getElementById('qty-' + pid);
+        let val = parseInt(input.value) || 1;
+        if (val > 1) {
+            input.value = val - 1;
+            input.form.submit();
+        }
+    }
+
+    // এই ফাংশনটি ইনপুটের সংখ্যা ১ বাড়ায় এবং ফর্ম সাবমিট করে
+    function incrementCartRow(pid, maxStock) {
+        const input = document.getElementById('qty-' + pid);
+        let val = parseInt(input.value) || 1;
+        if (val < maxStock) {
+            input.value = val + 1;
+            input.form.submit();
+        }
+    }
+
+    // কুপন কোড প্রয়োগ করার ফাংশন (AJAX API: /api/coupon/apply)
+    async function applyCoupon() {
+        const input = document.getElementById('couponInput');
+        const code = input ? input.value.trim() : '';
+        if (!code) {
+            alert('অনুগ্রহ করে একটি কুপন কোড লিখুন।');
+            return;
+        }
+
+        const btn = document.getElementById('applyCouponBtn');
+        if (btn) btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/coupon/apply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
+            });
+            const data = await res.json();
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'ভুল কুপন কোড');
+                if (btn) btn.disabled = false;
+            }
+        } catch (e) {
+            alert('কুপন প্রক্রিয়াকরণে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+            if (btn) btn.disabled = false;
+        }
+    }
+
+    // প্রযুক্ত কুপন কোড বাতিল করার ফাংশন (AJAX API: /api/coupon/remove)
+    async function removeCoupon() {
+        try {
+            const res = await fetch('/api/coupon/remove', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                location.reload();
+            }
+        } catch (e) {
+            location.reload();
+        }
+    }
+</script>
+{% endblock %}

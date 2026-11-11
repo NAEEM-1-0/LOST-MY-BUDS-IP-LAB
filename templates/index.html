@@ -1,0 +1,447 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/index.html
+     বিবরণ: প্রধান হোমপেজ - প্রিমিয়াম হিরো সেকশন, ইন্টারেক্টিভ বাড ফাইন্ডার উইজার্ড,
+           ট্রাস্ট বেনিফিট স্ট্রিপ, ফিল্টারিং ও সর্টিং টুলস, প্রোডাক্ট গ্রিড, 
+           কুইক ভিউ এবং কাস্টমার রিভিউ।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}BudsRecover — হারানো বাডের আসল রিপ্লেসমেন্ট পার্টস হাব{% endblock %}
+
+{% block content %}
+
+<!-- ১. হিরো সেকশন (Hero Section - Modern High-End Banner) -->
+<section class="hero-section">
+    <div class="hero-container">
+        
+        <!-- বাম পাশের টেক্সট ও কল-টু-অ্যাকশন -->
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                <span>দ্য সিঙ্গেল ইয়ারবাড রিপ্লেসমেন্ট প্ল্যাটফর্ম</span>
+            </div>
+            
+            <h1 class="hero-title">
+                একটি বাড হারিয়ে গেছে?<br>
+                <span class="gradient-text">পুরো সেট কেনার দিন শেষ।</span>
+            </h1>
+            
+            <p class="hero-description">
+                আপনার পছন্দের Apple AirPods, Samsung Galaxy Buds, Sony কিংবা OnePlus-এর হারিয়ে যাওয়া 
+                <strong>Left Bud</strong>, <strong>Right Bud</strong> বা <strong>Charging Case</strong> পেয়ে যান আলাদাভাবে। 
+                ১০০% আসল OEM কোয়ালিটি ও ৯০ দিনের রিপ্লেসমেন্ট ওয়ারেন্টিসহ।
+            </p>
+
+            <!-- হিরো অ্যাকশন বাটনসমূহ -->
+            <div class="hero-actions">
+                <!-- এই বাটনে ক্লিক করলে নিচে বাড ফাইন্ডার উইজার্ডে স্ক্রল করে নিয়ে যাবে -->
+                <a href="#finder" class="btn btn-primary btn-large">
+                    বাড ফাইন্ডার টুল <span>↓</span>
+                </a>
+                <!-- এই বাটনে ক্লিক করলে প্রোডাক্ট শপ সেকশনে যাবে -->
+                <a href="#shop" class="btn btn-secondary btn-large">
+                    সব পার্টস ব্রাউজ করুন <span>→</span>
+                </a>
+            </div>
+
+            <!-- ট্রাস্ট ও সোশ্যাল প্রুফ ইন্ডিকেটর -->
+            <div class="hero-proof-box">
+                <div class="proof-stars">★★★★★</div>
+                <div class="proof-text">
+                    <strong>৪.৯ / ৫.০ রেটিং</strong> · ৫০০+ গ্রাহক তাদের ইয়ারবাড জোড়া সফলভাবে উদ্ধার করেছেন
+                </div>
+            </div>
+        </div>
+
+        <!-- ডান পাশের প্রিমিয়াম ভিজুয়াল ডিসপ্লে (Interactive Earbud Visual Card) -->
+        <div class="hero-visual">
+            <div class="visual-card">
+                <div class="visual-badge">১০০% ম্যাচিং গ্যারান্টি</div>
+                <div class="earbud-interactive-display">
+                    <!-- লেফট বাড পার্ট প্রিভিউ -->
+                    <div class="part-preview-item active" data-part="Left Bud">
+                        <div class="part-icon-ring">🎧 L</div>
+                        <span>Left Bud</span>
+                        <small>উপলব্ধ</small>
+                    </div>
+                    <!-- চার্জিং কেস পার্ট প্রিভিউ -->
+                    <div class="part-preview-item" data-part="Charging Case">
+                        <div class="part-icon-ring">🔋 Case</div>
+                        <span>Charging Case</span>
+                        <small>উপলব্ধ</small>
+                    </div>
+                    <!-- রাইট বাড পার্ট প্রিভিউ -->
+                    <div class="part-preview-item active" data-part="Right Bud">
+                        <div class="part-icon-ring">🎧 R</div>
+                        <span>Right Bud</span>
+                        <small>উপলব্ধ</small>
+                    </div>
+                </div>
+
+                <div class="visual-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=800&q=80" 
+                         alt="Apple AirPods Pro Replacement Earbuds" 
+                         class="hero-floating-img" loading="eager">
+                </div>
+
+                <div class="visual-bottom-info">
+                    <div class="info-tag">Apple · AirPods Pro (2nd Gen)</div>
+                    <div class="info-price">শুরু মাত্র <strong>৳৫,৮৯০</strong> থেকে</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ২. ট্রাস্ট ও বেনিফিট স্ট্রিপ (Trust Strip) -->
+<section class="trust-strip">
+    <div class="trust-strip-container">
+        <div class="trust-item">
+            <div class="trust-icon">🛡️</div>
+            <div class="trust-text">
+                <strong>১০০% অরিজিনাল OEM পার্টস</strong>
+                <p>প্রত্যেকটি বাড নিখুঁতভাবে ল্যাবে টেস্ট করা</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">⚡</div>
+            <div class="trust-text">
+                <strong>৬০ সেকেন্ডে অটো পেয়ারিং</strong>
+                <p>সহজ ভিডিও ও পেয়ারিং নির্দেশিকা সহ</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">📦</div>
+            <div class="trust-text">
+                <strong>ক্যাশ অন ডেলিভারি</strong>
+                <p>পণ্য হাতে পেয়ে চেক করে পেমেন্ট করুন</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">🔄</div>
+            <div class="trust-text">
+                <strong>৯০ দিনের ওয়ারেন্টি</strong>
+                <p>যেকোনো টেকনিক্যাল সমস্যায় দ্রুত রিপ্লেসমেন্ট</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ৩. ইন্টারেক্টিভ বাড ফাইন্ডার উইজার্ড (Interactive Bud Matcher Wizard) -->
+<!-- ৩টি সহজ ক্লিকে সঠিক রিপ্লেসমেন্ট পার্ট খুঁজে বের করার বিশেষ টুল -->
+<section class="finder-section" id="finder">
+    <div class="finder-container">
+        <div class="section-title-wrap text-center">
+            <span class="section-subtitle">স্মার্ট ম্যাচিং উইজার্ড</span>
+            <h2 class="section-title">৩ ক্লিকে আপনার পার্টটি খুঁজুন</h2>
+            <p class="section-desc">ব্র্যান্ড ও মডেল সিলেক্ট করুন, আমাদের সিস্টেম সঠিক অরিজিনাল পার্টটি ফিল্টার করে দেবে।</p>
+        </div>
+
+        <form class="finder-card" id="budFinderForm" method="GET" action="{{ url_for('index') }}#shop">
+            
+            <!-- ধাপ ১: ব্র্যান্ড বাছাই -->
+            <div class="finder-step">
+                <label class="step-label">
+                    <span class="step-number">১</span>
+                    <span>ব্র্যান্ড সিলেক্ট করুন:</span>
+                </label>
+                <div class="brand-pills-row" id="brandPills">
+                    {% for b in brands %}
+                    <button type="button" class="brand-pill {% if selected_brand == b.brand %}selected{% endif %}" data-brand="{{ b.brand }}">
+                        {{ b.brand }}
+                    </button>
+                    {% endfor %}
+                </div>
+                <!-- হিডেন ইনপুট যাতে ফর্ম সাবমিটে ব্র্যান্ড ভ্যালু যায় -->
+                <input type="hidden" name="brand" id="finderBrandInput" value="{{ selected_brand }}">
+            </div>
+
+            <!-- ধাপ ২: মডেল বাছাই -->
+            <div class="finder-step">
+                <label class="step-label" for="finderModelSelect">
+                    <span class="step-number">২</span>
+                    <span>সঠিক মডেল সিলেক্ট করুন:</span>
+                </label>
+                <select name="model" id="finderModelSelect" class="finder-select">
+                    <option value="">-- সব মডেল --</option>
+                    {% for m in models %}
+                    <option value="{{ m.model }}" data-brand="{{ m.brand }}" {% if selected_model == m.model %}selected{% endif %}>
+                        {{ m.brand }} — {{ m.model }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- ধাপ ৩: কোন অংশ হারিয়েছে (Left / Right / Case) -->
+            <div class="finder-step">
+                <label class="step-label">
+                    <span class="step-number">৩</span>
+                    <span>কোন অংশটি প্রয়োজন?</span>
+                </label>
+                <div class="part-type-pills" id="partPills">
+                    <button type="button" class="part-pill {% if selected_category == 'Left Bud' %}selected{% endif %}" data-category="Left Bud">
+                        🎧 Left Bud
+                    </button>
+                    <button type="button" class="part-pill {% if selected_category == 'Right Bud' %}selected{% endif %}" data-category="Right Bud">
+                        🎧 Right Bud
+                    </button>
+                    <button type="button" class="part-pill {% if selected_category == 'Charging Case' %}selected{% endif %}" data-category="Charging Case">
+                        🔋 Charging Case
+                    </button>
+                </div>
+                <!-- হিডেন ইনপুট যাতে ফর্ম সাবমিটে ক্যাটাগরি ভ্যালু যায় -->
+                <input type="hidden" name="category" id="finderCategoryInput" value="{{ selected_category }}">
+            </div>
+
+            <!-- সাবমিট বাটন: ক্লিক করলে ক্যাটালগ ফিল্টার হবে -->
+            <div class="finder-submit-wrap">
+                <button type="submit" class="btn btn-primary btn-large btn-block" id="finderSubmitBtn">
+                    <span>⚡ সঠিক পার্টটি দেখুন</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+
+<!-- ৪. শপ ও প্রোডাক্ট ক্যাটালগ সেকশন (Shop Catalog Section) -->
+<section class="shop-section" id="shop">
+    <div class="shop-container">
+        
+        <div class="shop-header-flex">
+            <div>
+                <span class="section-subtitle">অরিজিনাল রিপ্লেসমেন্ট পার্টস</span>
+                <h2 class="section-title">পছন্দের পার্টস বেছে নিন</h2>
+            </div>
+            <!-- কুইক ক্যাটাগরি ট্যাব -->
+            <div class="quick-category-tabs">
+                <a href="{{ url_for('index') }}#shop" class="cat-tab {% if not selected_category %}active{% endif %}">সব পার্টস</a>
+                <a href="{{ url_for('index', category='Left Bud') }}#shop" class="cat-tab {% if selected_category == 'Left Bud' %}active{% endif %}">🎧 Left Buds</a>
+                <a href="{{ url_for('index', category='Right Bud') }}#shop" class="cat-tab {% if selected_category == 'Right Bud' %}active{% endif %}">🎧 Right Buds</a>
+                <a href="{{ url_for('index', category='Charging Case') }}#shop" class="cat-tab {% if selected_category == 'Charging Case' %}active{% endif %}">🔋 Cases</a>
+            </div>
+        </div>
+
+        <!-- সার্চ ও ফিল্টারিং টুলবার -->
+        <div class="catalog-toolbar-card" id="searchSection">
+            <form method="GET" action="{{ url_for('index') }}#shop" class="catalog-filter-form" id="catalogFilterForm">
+                
+                <!-- ১. সার্চ ইনপুট ফিল্ড -->
+                <div class="filter-field search-input-box">
+                    <span class="field-icon">🔍</span>
+                    <input type="search" name="q" value="{{ query }}" placeholder="মডেল বা পার্টের নাম লিখুন (যেমন: AirPods Pro, Galaxy Buds...)" class="input-field" aria-label="Search">
+                </div>
+
+                <!-- ২. ব্র্যান্ড ফিল্টার সিলেক্টর -->
+                <div class="filter-field">
+                    <select name="brand" class="select-field" aria-label="Brand Filter">
+                        <option value="">সব ব্র্যান্ড (All Brands)</option>
+                        {% for b in brands %}
+                        <option value="{{ b.brand }}" {% if selected_brand == b.brand %}selected{% endif %}>{{ b.brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- ৩. ক্যাটাগরি ফিল্টার সিলেক্টর -->
+                <div class="filter-field">
+                    <select name="category" class="select-field" aria-label="Category Filter">
+                        <option value="">সব পার্টস (All Parts)</option>
+                        {% for c in categories %}
+                        <option value="{{ c.category }}" {% if selected_category == c.category %}selected{% endif %}>{{ c.category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- ৪. সর্টিং অপশন ড্রপডাউন -->
+                <div class="filter-field">
+                    <select name="sort" class="select-field" aria-label="Sort By">
+                        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>নতুন আগে (Newest)</option>
+                        <option value="price-low" {% if sort == 'price-low' %}selected{% endif %}>দাম: কম থেকে বেশি</option>
+                        <option value="price-high" {% if sort == 'price-high' %}selected{% endif %}>দাম: বেশি থেকে কম</option>
+                        <option value="rating" {% if sort == 'rating' %}selected{% endif %}>সর্বোচ্চ রেটিং</option>
+                    </select>
+                </div>
+
+                <!-- ফিল্টার সাবমিট বাটন -->
+                <button type="submit" class="btn btn-primary filter-submit-btn">
+                    খুঁজুন
+                </button>
+
+            </form>
+
+            <!-- ফিল্টারের মেটা ডাটা ও ক্লিয়ার অপশন -->
+            <div class="catalog-meta-info">
+                <span>মোট <strong>{{ products|length }}</strong> টি পার্টস পাওয়া গেছে</span>
+                {% if query or selected_brand or selected_category or selected_model %}
+                <a href="{{ url_for('index') }}#shop" class="clear-filters-link">
+                    ফিল্টার মুছুন ✕
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- প্রোডাক্ট গ্রিড (Product Grid) -->
+        {% if products %}
+        <div class="product-cards-grid">
+            {% for p in products %}
+            <article class="product-card" data-pid="{{ p.id }}">
+                
+                <!-- কার্ড হেডার: ডিসকাউন্ট ব্যাজ ও পার্ট টাইপ -->
+                <div class="card-badges-row">
+                    {% if p.original_price and p.original_price > p.price %}
+                    {% set discount_pct = (((p.original_price - p.price) / p.original_price) * 100)|round|int %}
+                    <span class="badge discount-badge">{{ discount_pct }}% ছাড়</span>
+                    {% endif %}
+                    <span class="badge part-badge {{ p.category|lower|replace(' ', '-') }}">{{ p.category }}</span>
+                </div>
+
+                <!-- প্রোডাক্ট ইমেজ কনটেইনার -->
+                <div class="product-img-box">
+                    <a href="{{ url_for('product', pid=p.id) }}" class="product-img-link" title="{{ p.name }} এর বিস্তারিত দেখুন">
+                        <!-- ছবি লোড হতে ব্যর্থ হলে স্বয়ংক্রিয়ভাবে ডিফল্ট ওয়্যারলেস বাডের ছবি লোড হবে -->
+                        <img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy" class="product-thumbnail" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80';">
+                    </a>
+
+                    <!-- =========================================================================
+                         📌 VIVA QUESTION: "কার্ডের চোখের আইকন (Quick View) বাটনটি কীভাবে কাজ করে?"
+                         👉 ফাইল: templates/index.html (.quickview-btn)
+                         👉 জাভাস্ক্রিপ্ট: static/store.js এর Section 5 এ ক্লিক হ্যান্ডলার রয়েছে।
+                         👉 ব্যাকএন্ড এপিআই: /api/product/<pid> কল করে মডালে ডাইনামিক তথ্য প্রদর্শন করে।
+                         ========================================================================= -->
+                    <button type="button" class="quickview-btn" data-pid="{{ p.id }}" title="এক নজরে দেখুন" aria-label="Quick View {{ p.name }}">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- প্রোডাক্ট ইনফরমেশন ও বিবরণ -->
+                <div class="product-details">
+                    <div class="product-brand-tag">{{ p.brand }} · {{ p.model }}</div>
+                    
+                    <h3 class="product-title">
+                        <a href="{{ url_for('product', pid=p.id) }}">{{ p.name }}</a>
+                    </h3>
+
+                    <!-- কন্ডিশন ও ওয়ারেন্টি ট্যাগ -->
+                    <div class="condition-tag">
+                        <span class="bullet-green"></span> {{ p.condition }} · ৯০ দিন ওয়ারেন্টি
+                    </div>
+
+                    <!-- রেটিং ডিসপ্লে -->
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-num">{{ p.rating }}</span>
+                        <span class="rating-count">({{ p.reviews_count }})</span>
+                    </div>
+
+                    <!-- প্রাইস ও স্টক স্ট্যাটাস -->
+                    <div class="product-pricing">
+                        <div class="price-box">
+                            <span class="current-price">৳{{ '%.0f'|format(p.price) }}</span>
+                            {% if p.original_price and p.original_price > p.price %}
+                            <span class="original-price">৳{{ '%.0f'|format(p.original_price) }}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- স্টক নির্দেশক -->
+                        {% if p.stock > 0 %}
+                        <span class="stock-pill in-stock">স্টকে আছে ({{ p.stock }} টি)</span>
+                        {% else %}
+                        <span class="stock-pill out-of-stock">স্টক আউট</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- অ্যাকশন বাটন: কার্টে যোগ করার আধুনিক বাটন -->
+                    <div class="card-action-box">
+                        {% if p.stock > 0 %}
+                        <!-- =========================================================================
+                             📌 VIVA QUESTION: "প্রোডাক্ট কার্ডের '+ কার্টে যোগ করুন' বাটন চাপলে কী হয়?"
+                             👉 ফাইল: templates/index.html (.ajax-add-to-cart-btn)
+                             👉 কাজ: এটি ক্লিক করলে পেজ রিলোড না করে static/store.js এর মাধ্যমে
+                                    POST /api/cart/add/<pid> এ রিকোয়েস্ট পাঠায়, টোস্ট দেখায় এবং স্লাইড কার্ট খুলে দেয়।
+                             ========================================================================= -->
+                        <button type="button" class="btn btn-primary btn-block ajax-add-to-cart-btn" data-pid="{{ p.id }}">
+                            <span class="btn-icon">+</span>
+                            <span>কার্টে যোগ করুন</span>
+                        </button>
+                        {% else %}
+                        <button class="btn btn-disabled btn-block" disabled>স্টক নেই</button>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- কোনো প্রোডাক্ট না পেলে ফাঁকা স্টেট -->
+        <div class="empty-results-box">
+            <div class="empty-icon">🔍</div>
+            <h3>দুঃখিত! এই ফিল্টারে কোনো পার্টস খুঁজে পাওয়া যায়নি</h3>
+            <p>আপনার সার্চ কি-ওয়ার্ড বা ব্র্যান্ড ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।</p>
+            <a href="{{ url_for('index') }}#shop" class="btn btn-secondary">সব পার্টস ক্যাটালগ দেখুন</a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+
+<!-- ৫. কীভাবে কাজ করে সেকশন (How It Works Section) -->
+<section class="how-it-works-section">
+    <div class="how-container">
+        <div class="section-title-wrap text-center">
+            <span class="section-subtitle">সহজ ও নিরাপদ প্রক্রিয়া</span>
+            <h2 class="section-title">৪টি ধাপে আপনার সেটটি পূর্ণ করুন</h2>
+            <p class="section-desc">নতুন ইয়ারবাড পেয়ার করা এখন আগের চেয়েও সহজ ও ঝুঁকিমুক্ত।</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-badge">০১</div>
+                <h3>মডেল সিলেক্ট করুন</h3>
+                <p>আপনার কেস বা ফোনের সেটিংসে গিয়ে আসল মডেল কোড মিলিয়ে সঠিক Left/Right বাডটি বেছে নিন।</p>
+            </div>
+            <div class="step-card">
+                <div class="step-badge">০২</div>
+                <h3>অর্ডার প্লেস করুন</h3>
+                <p>কোনো অগ্রিম পেমেন্ট ছাড়া ক্যাশ অন ডেলিভারিতে অর্ডার করুন। ২৪-৪৮ ঘণ্টায় ডেলিভারি সম্পন্ন হয়।</p>
+            </div>
+            <div class="step-card">
+                <div class="step-badge">০৩</div>
+                <h3>পুরনো কেসে চার্জ দিন</h3>
+                <p>নতুন আসা বাডটি আপনার পুরনো কেসে রেখে ৩০ মিনিট সাধারণ চার্জে রাখুন যাতে কাপলিং রেডি হয়।</p>
+            </div>
+            <div class="step-card">
+                <div class="step-badge">০৪</div>
+                <h3>৬০ সেকেন্ডে পেয়ার করুন</h3>
+                <p>আমাদের দেওয়া সহজ স্টেপ-বাই-স্টেপ গাইড দেখে ১৫ সেকেন্ড বাটন চেপে পুনরায় নিখুঁত সাউন্ড উপভোগ করুন।</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ৬. মডেল ম্যাচিং হেল্প কল-আউট (Help Callout Banner) -->
+<section class="help-callout-section">
+    <div class="help-callout-card">
+        <div class="help-callout-content">
+            <span class="callout-pill">বিশেষজ্ঞ সহায়তা</span>
+            <h2>সঠিক মডেলটি বুঝতে পারছেন না?</h2>
+            <p>আপনার কাছে থাকা বাড বা কেসের ছবি ও বিবরণ আমাদের পাঠিয়ে দিন। আমাদের টেকনিক্যাল টিম সঠিক পার্ট খুঁজে দিতে সাহায্য করবে।</p>
+            <a href="{{ url_for('help_request') }}" class="btn btn-light btn-large">
+                মডেল হেল্প রিকোয়েস্ট পাঠান <span>→</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

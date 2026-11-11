@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/register.html
+     বিবরণ: নতুন গ্রাহক রেজিস্ট্রেশন পেজ - নাম, ইমেইল, ফোন ও পাসওয়ার্ড সংরক্ষণ।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}নতুন অ্যাকাউন্ট তৈরি করুন — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="auth-page-wrap">
+    
+    <div class="auth-card">
+        
+        <div class="auth-header text-center">
+            <span class="auth-subtitle">BudsRecover এ স্বাগতম</span>
+            <h1 class="auth-title">অ্যাকাউন্ট তৈরি করুন</h1>
+            <p class="auth-desc">আপনার তথ্য সুরক্ষিত রেখে সহজে কেনাকাটা ও অর্ডার ট্র্যাক করুন।</p>
+        </div>
+
+        {% if error %}
+        <div class="auth-error-alert" role="alert">
+            <span>⚠️ {{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('register') }}" class="auth-form" id="registerForm">
+            
+            <div class="form-group">
+                <label for="regName">আপনার পূর্ণ নাম <span class="required">*</span></label>
+                <input type="text" id="regName" name="name" placeholder="যেমন: আরিফুল ইসলাম" required autocomplete="name">
+            </div>
+
+            <div class="form-group">
+                <label for="regPhone">মোবাইল নম্বর <span class="required">*</span></label>
+                <input type="tel" id="regPhone" name="phone" placeholder="01XXXXXXXXX" pattern="[0-9+ -]{11,15}" required autocomplete="tel">
+            </div>
+
+            <div class="form-group">
+                <label for="regEmail">ইমেইল ঠিকানা <span class="required">*</span></label>
+                <input type="email" id="regEmail" name="email" placeholder="example@email.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="regPassword">গোপন পাসওয়ার্ড <span class="required">*</span></label>
+                <input type="password" id="regPassword" name="password" minlength="6" placeholder="কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড" required autocomplete="new-password">
+            </div>
+
+            <!-- রেজিস্ট্রেশন সাবমিট বাটন -->
+            <!-- এই বাটনে ক্লিক করলে পাসওয়ার্ড হ্যাশ হয়ে ডাটাবেজে নতুন ইউজার তৈরি হবে -->
+            <button type="submit" class="btn btn-primary btn-large btn-block" id="regSubmitBtn">
+                <span>অ্যাকাউন্ট খুলুন ➔</span>
+            </button>
+        </form>
+
+        <div class="auth-footer text-center">
+            <p>ইতোমধ্যে অ্যাকাউন্ট আছে? <a href="{{ url_for('login') }}" class="auth-link">এখানে সাইন ইন করুন</a></p>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

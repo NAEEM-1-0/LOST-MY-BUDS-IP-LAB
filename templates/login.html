@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/login.html
+     বিবরণ: গ্রাহক ও এডমিন সাইন ইন পেজ - ইমেইল ও পাসওয়ার্ড যাচাই, এরর মেসেজ
+           এবং প্রজেক্ট মূল্যায়নের সুবিধার্থে ডেমো ক্রেডেনশিয়াল ইঙ্গিত।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}সাইন ইন করুন — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="auth-page-wrap">
+    
+    <div class="auth-card">
+        
+        <div class="auth-header text-center">
+            <span class="auth-subtitle">BudsRecover অ্যাকাউন্ট</span>
+            <h1 class="auth-title">সাইন ইন করুন</h1>
+            <p class="auth-desc">আপনার পূর্ববর্তী অর্ডার ট্র্যাকিং ও দ্রুত চেকআউটের জন্য লগইন করুন।</p>
+        </div>
+
+        <!-- এরর অ্যালার্ট -->
+        {% if error %}
+        <div class="auth-error-alert" role="alert">
+            <span>⚠️ {{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login') }}" class="auth-form" id="loginForm">
+            <!-- রিডাইরেক্ট নেক্সট পেজ হিডেন ইনপুট -->
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="form-group">
+                <label for="loginEmail">ইমেইল ঠিকানা</label>
+                <input type="email" id="loginEmail" name="email" placeholder="example@email.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="loginPassword">পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" name="password" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <!-- লগইন সাবমিট বাটন -->
+            <!-- এই বাটনে ক্লিক করলে পাসওয়ার্ড যাচাই হয়ে সেশন তৈরি হবে -->
+            <button type="submit" class="btn btn-primary btn-large btn-block" id="loginSubmitBtn">
+                <span>লগইন করুন ➔</span>
+            </button>
+        </form>
+
+        <!-- একাডেমিক গ্রুপ প্রজেক্ট ডেমো লগইন সহায়িকা -->
+        <div class="demo-credentials-box">
+            <div class="demo-badge">👨‍🏫 প্রজেক্ট ইভ্যালুয়েশন ডেমো লগইন</div>
+            <p><strong>এডমিন একাউন্ট:</strong> <code>admin@budsrecover.com</code></p>
+            <p><strong>পাসওয়ার্ড:</strong> <code>admin123</code></p>
+        </div>
+
+        <div class="auth-footer text-center">
+            <p>নতুন গ্রাহক? <a href="{{ url_for('register') }}" class="auth-link">এখানে একটি ফ্রি অ্যাকাউন্ট তৈরি করুন</a></p>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

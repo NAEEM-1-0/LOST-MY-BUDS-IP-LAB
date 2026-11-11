@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/sell_your_bud.html
+     বিবরণ: পড়ে থাকা বা অব্যবহৃত বাড / চার্জিং কেস বিক্রি করার পেজ (Trade-In / Buyback Hub)।
+           - অনেকের একপাশের বাড হারিয়ে গেলে অন্যপাশের বাড বা কেসটি ড্রয়ারে অকেজো পড়ে থাকে।
+           - গ্রাহক এখানে তার বাডের তথ্য দিয়ে আমাদের কাছে বিক্রি করতে পারে অথবা এক্সচেঞ্জ ডিসকাউন্ট নিতে পারে।
+           - লাইভ ইনস্ট্যান্ট প্রাইস ক্যালকুলেটর (ব্র্যান্ড ও কন্ডিশন সিলেক্ট করলেই আনুমানিক দাম দেখায়)।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}পড়ে থাকা বাড বিক্রি করুন (Trade-In) — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="trade-in-page-wrap">
+
+    <!-- ১. হিরো সেকশন -->
+    <section class="trade-in-hero">
+        <span class="section-subtitle">অব্যবহৃত পার্টসের সঠিক মূল্যায়ন</span>
+        <h1 class="page-title">ড্রয়ারে পড়ে থাকা বাড বা কেস বিক্রি করুন</h1>
+        <p class="hero-desc">
+            একপাশের বাড হারিয়ে গেছে বলে অন্যটি কি ড্রয়ারে ফেলে রেখেছেন? BudsRecover-এ আপনার পড়ে থাকা বাড বা কেসটি বিক্রি করে ক্যাশ টাকা বুঝে নিন অথবা নতুন রিপ্লেসমেন্টে ছাড় পান!
+        </p>
+    </section>
+
+    <!-- ২. সফল সাবমিশন মেসেজ ব্যানার -->
+    {% if success %}
+    <div class="trade-success-banner" role="alert">
+        <div class="banner-icon">🎉</div>
+        <div class="banner-content">
+            <h2>আপনার ট্রেড-ইন আবেদন সফলভাবে গৃহীত হয়েছে!</h2>
+            <p>আমাদের প্রতিনিধি আপনার দেওয়া ফোন নম্বরে আগামী ২৪ ঘণ্টার মধ্যে যোগাযোগ করে কুরিয়ার পিকআপ ও পেমেন্ট কনফার্ম করবে।</p>
+            {% if estimated_price > 0 %}
+            <div class="estimated-tag">
+                আনুমানিক মূল্যায়ন: <strong>৳{{ estimated_price }}</strong> (টেস্টিংয়ের পর নিশ্চিত হবে)
+            </div>
+            {% endif %}
+            <a href="{{ url_for('index') }}" class="btn btn-primary" style="margin-top:1rem; display:inline-block;">হোমপেজে ফিরুন</a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="checkout-error-alert" role="alert">
+        <span>⚠️ {{ error }}</span>
+    </div>
+    {% endif %}
+
+    {% if not success %}
+    <div class="trade-grid-layout">
+        
+        <!-- বাম পাশ: বাড বিক্রির আবেদন ফর্ম -->
+        <div class="trade-form-column">
+            <div class="trade-card">
+                <div class="card-step-header">
+                    <span class="step-num">১</span>
+                    <h3>পণ্যের তথ্য প্রদান করুন</h3>
+                </div>
+
+                <form method="POST" action="{{ url_for('sell_your_bud') }}" id="tradeInForm" class="trade-main-form">
+                    
+                    <!-- ব্যক্তিগত তথ্য -->
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="sellerName">আপনার নাম <span class="required">*</span></label>
+                            <input type="text" id="sellerName" name="name" placeholder="আপনার পুরো নাম" required autocomplete="name">
+                        </div>
+                        <div class="form-group half">
+                            <label for="sellerPhone">মোবাইল নম্বর <span class="required">*</span></label>
+                            <input type="tel" id="sellerPhone" name="phone" placeholder="01XXXXXXXXX" pattern="[0-9+ -]{11,15}" required autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <!-- ব্র্যান্ড নির্বাচন -->
+                    <div class="form-group">
+                        <label for="tradeBrand">ইয়ারবাডের ব্র্যান্ড <span class="required">*</span></label>
+                        <select id="tradeBrand" name="brand" class="form-select" onchange="recalculateEstimate()" required>
+                            <option value="" disabled selected>ব্র্যান্ড বাছাই করুন</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Sony">Sony</option>
+                            <option value="Nothing">Nothing</option>
+                            <option value="OnePlus">OnePlus</option>
+                            <option value="Google">Google</option>
+                            <option value="JBL">JBL</option>
+                        </select>
+                    </div>
+
+                    <!-- মডেল নাম ও কোড -->
+                    <div class="form-group">
+                        <label for="tradeModel">মডেল নাম <span class="required">*</span></label>
+                        <input type="text" id="tradeModel" name="model" placeholder="যেমন: AirPods Pro 2, Galaxy Buds 2 Pro, WF-1000XM4..." required>
+                    </div>
+
+                    <!-- পার্ট ক্যাটাগরি -->
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="tradePart">কোন পার্টটি বিক্রি করবেন? <span class="required">*</span></label>
+                            <select id="tradePart" name="part_type" class="form-select" required>
+                                <option value="Left Bud">লেফট ইয়ারবাড (Left Bud)</option>
+                                <option value="Right Bud">রাইট ইয়ারবাড (Right Bud)</option>
+                                <option value="Charging Case">চার্জিং কেস (Charging Case)</option>
+                            </select>
+                        </div>
+
+                        <!-- কন্ডিশন / বর্তমান অবস্থা -->
+                        <div class="form-group half">
+                            <label for="tradeCondition">বর্তমান কন্ডিশন <span class="required">*</span></label>
+                            <select id="tradeCondition" name="condition" class="form-select" onchange="recalculateEstimate()" required>
+                                <option value="Mint">একদম নতুনের মতো (Mint Condition)</option>
+                                <option value="Good" selected>ভালো (Good - সামান্য স্ক্র্যাচ আছে)</option>
+                                <option value="Fair">সাধারণ (Fair - সাউন্ড ঠিক কিন্তু বডি রাফ)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- গ্রাহকের প্রত্যাশিত মূল্য -->
+                    <div class="form-group">
+                        <label for="expectedPrice">আপনার কাঙ্ক্ষিত মূল্য (টাকায় - ঐচ্ছিক)</label>
+                        <input type="number" id="expectedPrice" name="expected_price" placeholder="যেমন: 2500">
+                    </div>
+
+                    <!-- সাবমিট বাটন: আবেদন ডাটাবেজে সেভ করে এডমিন প্যানেলে পাঠাবে -->
+                    <div class="trade-submit-box">
+                        <button type="submit" class="btn btn-primary btn-large btn-block" id="submitTradeBtn">
+                            <span>বিক্রয়ের আবেদন জমা দিন ➔</span>
+                        </button>
+                        <small class="form-hint">আমরা কুরিয়ারের মাধ্যমে সারা দেশ থেকে পার্সেল রিসিভ করে সরাসরি বিকাশে টাকা পাঠিয়ে দিই।</small>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- ডান পাশ: লাইভ প্রাইস ক্যালকুলেটর ও সুবিধা -->
+        <aside class="trade-estimator-column">
+            
+            <!-- ইনস্ট্যান্ট প্রাইস এস্টিমেটর উইজেট -->
+            <div class="estimator-card">
+                <span class="est-badge">লাইভ এস্টিমেটর</span>
+                <h3>আনুমানিক বিক্রয় মূল্য</h3>
+                
+                <div class="est-price-display">
+                    <span class="currency">৳</span>
+                    <span class="amount" id="estimatedPriceDisplay">২৫০০</span>
+                </div>
+                <p class="est-note" id="estimatedPriceNote">Samsung · Good Condition এর আনুমানিক গড় মূল্য</p>
+
+                <div class="est-steps-list">
+                    <div class="est-step-item">
+                        <span class="step-icon">১</span>
+                        <div>
+                            <strong>অনলাইনে ফর্ম পূরণ</strong>
+                            <p>আপনার বাডের ব্র্যান্ড ও কন্ডিশন জানান</p>
+                        </div>
+                    </div>
+                    <div class="est-step-item">
+                        <span class="step-icon">২</span>
+                        <div>
+                            <strong>ফ্রি কুরিয়ার পিকআপ</strong>
+                            <p>আমাদের ডেলিভারি টিম আপনার লোকেশন থেকে পার্সেল সংগ্রহ করবে</p>
+                        </div>
+                    </div>
+                    <div class="est-step-item">
+                        <span class="step-icon">৩</span>
+                        <div>
+                            <strong>ইনস্ট্যান্ট বিকাশ পেমেন্ট</strong>
+                            <p>ল্যাব টেস্টের ২ ঘণ্টার মধ্যে আপনার বিকাশ/নগদে টাকা পৌঁছে যাবে</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ট্রাস্ট ব্যাজ -->
+            <div class="trade-trust-card">
+                <h4>🛡️ কেন আমাদের কাছে বিক্রি করবেন?</h4>
+                <ul class="trust-check-list">
+                    <li>✓ ১০০% ন্যায্য ও স্বচ্ছ বাজার মূল্য</li>
+                    <li>✓ কোনো হিডেন চার্জ বা কুরিয়ার খরচ নেই</li>
+                    <li>✓ নিরাপদ ও তাৎক্ষণিক ডিজিটাল ওয়ালেট পেমেন্ট</li>
+                    <li>✓ ই-বর্জ্য কমিয়ে পরিবেশ সুরক্ষায় আপনার অবদান</li>
+                </ul>
+            </div>
+
+        </aside>
+
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    // লাইভ প্রাইস এস্টিমেটর ক্যালকুলেটর
+    const brandBaseRates = {
+        'Apple': 3400,
+        'Sony': 3600,
+        'Samsung': 2600,
+        'Nothing': 2200,
+        'Google': 2600,
+        'OnePlus': 2000,
+        'JBL': 1500
+    };
+
+    function recalculateEstimate() {
+        const brand = document.getElementById('tradeBrand').value || 'Samsung';
+        const condition = document.getElementById('tradeCondition').value || 'Good';
+        
+        const base = brandBaseRates[brand] || 2200;
+        let multiplier = 1.0;
+        if (condition === 'Mint') multiplier = 1.15;
+        else if (condition === 'Fair') multiplier = 0.70;
+
+        const est = Math.round(base * multiplier);
+        document.getElementById('estimatedPriceDisplay').innerText = est;
+        document.getElementById('estimatedPriceNote').innerText = `${brand} · ${condition} কন্ডিশনের আনুমানিক গড় মূল্যায়ন`;
+    }
+</script>
+{% endblock %}

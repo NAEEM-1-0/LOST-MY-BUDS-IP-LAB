@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/add_product.html
+     বিবরণ: নতুন ইয়ারবাড রিপ্লেসমেন্ট পার্ট যুক্ত করার এডমিন ফর্ম - নাম, ব্র্যান্ড,
+           মডেল, ক্যাটাগরি, দাম, স্টক, ছবি আপলোড ও পেয়ারিং নির্দেশিকা ইনপুট।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}নতুন পার্টস যুক্ত করুন — BudsRecover Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-wrap">
+    
+    <div class="admin-header-flex">
+        <div>
+            <a href="{{ url_for('admin_products') }}" class="back-nav-link">← ইনভেন্টরিতে ফিরে যান</a>
+            <h1 class="page-title">নতুন রিপ্লেসমেন্ট পার্টস যুক্ত করুন</h1>
+        </div>
+    </div>
+
+    <div class="admin-form-card">
+        
+        {% if error %}
+        <div class="admin-error-alert" role="alert">
+            <span>⚠️ {{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('admin_add_product') }}" enctype="multipart/form-data" class="admin-add-form">
+            
+            <div class="form-group">
+                <label for="prodName">প্রোডাক্টের পূর্ণ নাম <span class="required">*</span></label>
+                <input type="text" id="prodName" name="name" placeholder="যেমন: Apple AirPods Pro (2nd Gen) — Left Bud" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="prodBrand">ব্র্যান্ড <span class="required">*</span></label>
+                    <select id="prodBrand" name="brand" class="form-select" required>
+                        <option value="Apple">Apple</option>
+                        <option value="Samsung">Samsung</option>
+                        <option value="Sony">Sony</option>
+                        <option value="Nothing">Nothing</option>
+                        <option value="OnePlus">OnePlus</option>
+                        <option value="JBL">JBL</option>
+                        <option value="Google">Google</option>
+                        <option value="Other">অন্যান্য</option>
+                    </select>
+                </div>
+
+                <div class="form-group half">
+                    <label for="prodModel">মডেল সিরিজ <span class="required">*</span></label>
+                    <input type="text" id="prodModel" name="model" placeholder="যেমন: AirPods Pro 2 / Galaxy Buds 2 Pro" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="prodCategory">পার্টসের ধরন (Category) <span class="required">*</span></label>
+                    <select id="prodCategory" name="category" class="form-select" required>
+                        <option value="Left Bud">🎧 লেফট ইয়ারবাড (Left Bud)</option>
+                        <option value="Right Bud">🎧 রাইট ইয়ারবাড (Right Bud)</option>
+                        <option value="Charging Case">🔋 চার্জিং কেস (Charging Case)</option>
+                        <option value="Accessories">ইয়ারটিপস ও অ্যাকসেসরিজ</option>
+                    </select>
+                </div>
+
+                <div class="form-group half">
+                    <label for="prodCondition">কন্ডিশন</label>
+                    <select id="prodCondition" name="condition" class="form-select">
+                        <option value="Original Brand New (OEM)">Original Brand New (OEM)</option>
+                        <option value="Original OEM Tested">Original OEM Tested</option>
+                        <option value="Certified Refurbished (Grade A+)">Certified Refurbished (Grade A+)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="prodPrice">বিক্রয় মূল্য (টাকা) <span class="required">*</span></label>
+                    <input type="number" id="prodPrice" name="price" step="10" placeholder="যেমন: 5890" required>
+                </div>
+
+                <div class="form-group half">
+                    <label for="prodOriginalPrice">রেগুলার মূল্য (ডিসকাউন্ট দেখাতে)</label>
+                    <input type="number" id="prodOriginalPrice" name="original_price" step="10" placeholder="যেমন: 7500">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="prodStock">স্টক পরিমাণ (পিস) <span class="required">*</span></label>
+                <input type="number" id="prodStock" name="stock" value="10" min="0" required>
+            </div>
+
+            <!-- ছবি আপলোড ও URL ফিল্ড -->
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="prodImageFile">কম্পিউটার থেকে ছবি আপলোড করুন</label>
+                    <input type="file" id="prodImageFile" name="image_file" accept="image/*">
+                </div>
+                <div class="form-group half">
+                    <label for="prodImageUrl">অথবা সরাসরি ইমেজ URL দিন</label>
+                    <input type="url" id="prodImageUrl" name="image_url" placeholder="https://images.unsplash.com/...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="prodDesc">প্রোডাক্ট বিবরণ ও বিশেষত্ব</label>
+                <textarea id="prodDesc" name="description" rows="3" placeholder="প্রোডাক্টের সাউন্ড কোয়ালিটি, চিপসেট ও ওয়ারেন্টি সম্পর্কিত তথ্য..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="prodCompat">মডেল কোড ম্যাচিং নির্দেশিকা (Compatibility)</label>
+                <input type="text" id="prodCompat" name="compatibility" placeholder="যেমন: Model A2698, A2699 এর জন্য উপযুক্ত">
+            </div>
+
+            <div class="form-group">
+                <label for="prodPairing">৬০-সেকেন্ড পেয়ারিং গাইড</label>
+                <textarea id="prodPairing" name="pairing_guide" rows="2" placeholder="গ্রাহক কীভাবে এটি নিজের কেসে কানেক্ট করবে তার সংক্ষিপ্ত নিয়ম..."></textarea>
+            </div>
+
+            <!-- সাবমিট বাটন: এই বাটনে ক্লিক করলে ডাটাবেজে প্রোডাক্ট সংরক্ষণ হবে -->
+            <button type="submit" class="btn btn-primary btn-large btn-block" id="saveProductBtn">
+                <span>+ ক্যাটালগে প্রোডাক্ট সেভ করুন</span>
+            </button>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}

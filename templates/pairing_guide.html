@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/pairing_guide.html
+     বিবরণ: ব্র্যান্ডভিত্তিক বিস্তারিত পেয়ারিং গাইড - Apple, Samsung, Sony, Nothing,
+           OnePlus ও JBL ইয়ারবাড কীভাবে পুরনো সেটের সাথে সিঙ্ক করতে হয় তার নির্দেশিকা।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}সহজ পেয়ারিং নির্দেশিকা — BudsRecover{% endblock %}
+
+{% block content %}
+<div class="guide-page-wrap">
+    
+    <div class="guide-header-title text-center">
+        <span class="section-subtitle">৬০-সেকেন্ড অটো সিঙ্ক গাইড</span>
+        <h1 class="page-title">নতুন রিপ্লেসমেন্ট বাড পেয়ার করার নিয়ম</h1>
+        <p class="guide-intro-text">
+            নতুন কেনা Left Bud, Right Bud বা Charging Case কীভাবে আপনার বিদ্যমান সেটের সাথে কানেক্ট করবেন? 
+            নিচের আপনার ব্র্যান্ডের নির্দেশিকাটি অনুসরণ করুন।
+        </p>
+    </div>
+
+    <!-- ব্র্যান্ড সিলেক্টর ট্যাব -->
+    <div class="guide-brand-tabs">
+        <button class="guide-tab-btn active" onclick="showGuideTab('apple', this)">🍏 Apple AirPods</button>
+        <button class="guide-tab-btn" onclick="showGuideTab('samsung', this)">🔵 Samsung Galaxy Buds</button>
+        <button class="guide-tab-btn" onclick="showGuideTab('sony', this)">🎧 Sony Series</button>
+        <button class="guide-tab-btn" onclick="showGuideTab('nothing', this)">⚪ Nothing Ear</button>
+        <button class="guide-tab-btn" onclick="showGuideTab('oneplus', this)">🔴 OnePlus Buds</button>
+    </div>
+
+    <!-- গাইড কনটেন্ট কন্টেইনার -->
+    <div class="guide-contents-box">
+        
+        <!-- ১. অ্যাপল এয়ারপডস গাইড -->
+        <div class="guide-panel active" id="appleGuide">
+            <div class="guide-panel-header">
+                <h2>Apple AirPods Pro / AirPods 2 & 3 পেয়ারিং স্টেপ</h2>
+                <span class="guide-badge">সময় প্রয়োজন: মাত্র ৬০ সেকেন্ড</span>
+            </div>
+            
+            <div class="guide-steps-timeline">
+                <div class="timeline-step">
+                    <div class="step-num-circle">১</div>
+                    <div class="step-details">
+                        <h3>ফোনের ব্লুটুথ থেকে আগের কানেকশন Forget করুন</h3>
+                        <p>আপনার iPhone বা Android ফোনের Settings > Bluetooth এ যান। সেখানে আগের AirPods এর নামের পাশে (i) বাটনে ট্যাপ করে <strong>"Forget This Device"</strong> দিন। এরপর ব্লুটুথ অফ করে আবার অন করুন।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">২</div>
+                    <div class="step-details">
+                        <h3>উভয় বাড কেসে রেখে ৩০ মিনিট চার্জ দিন</h3>
+                        <p>নতুন পাওয়া রিপ্লেসমেন্ট বাড এবং আপনার কাছে থাকা পুরনো বাড দুটিই চার্জিং কেসের ভেতর ঢুকিয়ে রাখুন। চার্জার ক্যাবল লাগিয়ে কমপক্ষে ৩০ মিনিট চার্জ দিন যাতে উভয়ের ফার্মওয়্যার সিঙ্ক হয়।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">৩</div>
+                    <div class="step-details">
+                        <h3>সেটআপ বাটন ১৫ সেকেন্ড চেপে ধরে রাখুন</h3>
+                        <p>কেসের ঢাকনা খোলা রেখে কেসের পেছনের ছোট গোলাকার বাটনটি একটানা ১৫ সেকেন্ড চেপে ধরে রাখুন। স্ট্যাটাস লাইটটি প্রথমে অ্যাম্বার (হলুদ/কমলা) রঙে কয়েকবার ব্লিঙ্ক করবে এবং এরপর <strong>সাদা লাইট ব্লিঙ্ক</strong> করতে শুরু করবে।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">৪</div>
+                    <div class="step-details">
+                        <h3>স্ক্রিনে পপআপ আসলে Connect চাপুন</h3>
+                        <p>এবার কেসের ঢাকনা খোলা অবস্থায় আপনার ফোনের কাছে আনুন। স্ক্রিনে আসা পপআপে "Connect" চাপুন। আপনার জোড়াটি সম্পূর্ণ প্রস্তুত!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ২. স্যামসাং গ্যালাক্সি বাডস গাইড -->
+        <div class="guide-panel" id="samsungGuide">
+            <div class="guide-panel-header">
+                <h2>Samsung Galaxy Buds 2 Pro / FE কাপলিং স্টেপ</h2>
+                <span class="guide-badge">সময় প্রয়োজন: মাত্র ৬০ সেকেন্ড</span>
+            </div>
+            
+            <div class="guide-steps-timeline">
+                <div class="timeline-step">
+                    <div class="step-num-circle">১</div>
+                    <div class="step-details">
+                        <h3>উভয় বাড কেসের স্লটে রাখুন</h3>
+                        <p>নতুন এবং পুরনো বাড দুটিই Galaxy Buds কেসের সঠিক লেফট ও রাইট স্লটে স্থাপন করুন। কেসের ইন্ডিকেটর লাইটটি জ্বলছে কি না তা খেয়াল করুন।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">২</div>
+                    <div class="step-details">
+                        <h3>উভয় বাডের টাচপ্যাডে ৭ সেকেন্ড চেপে ধরে রাখুন</h3>
+                        <p>কেস খোলা অবস্থায় দুই বাডের স্পর্শকাতর অংশে (Touch sensor) একযোগে আপনার দুই আঙুল দিয়ে <strong>৭ সেকেন্ড বা তার বেশি সময় ধরে চেপে ধরে রাখুন</strong>। কেসের ভেতরের লাইটটি সবুজ রঙে বারবার ব্লিঙ্ক করে কাপলিং সম্পন্ন করবে।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">৩</div>
+                    <div class="step-details">
+                        <h3>Galaxy Wearable অ্যাপে সংযোগ দিন</h3>
+                        <p>আপনার ফোনের Galaxy Wearable অ্যাপ ওপেন করে নতুন জোড়াটি কানেক্ট করে সফটওয়্যার আপডেট চেক করে নিন।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ৩. সনি WF সিরিজ গাইড -->
+        <div class="guide-panel" id="sonyGuide">
+            <div class="guide-panel-header">
+                <h2>Sony WF-1000XM5 / XM4 পেয়ারিং রিসেট স্টেপ</h2>
+                <span class="guide-badge">সময় প্রয়োজন: মাত্র ৬০ সেকেন্ড</span>
+            </div>
+            
+            <div class="guide-steps-timeline">
+                <div class="timeline-step">
+                    <div class="step-num-circle">১</div>
+                    <div class="step-details">
+                        <h3>বাড দুটি কেসে ঢুকিয়ে ঢাকনা খোলা রাখুন</h3>
+                        <p>নতুন রিপ্লেসমেন্ট পার্ট ও পুরনো পার্ট কেসে বসান। নিশ্চিত করুন উভয় পাশের চার্জিং কানেক্টর ঠিকমত স্পর্শ করেছে।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">২</div>
+                    <div class="step-details">
+                        <h3>কেসের পেছনের পেয়ারিং বাটন ২০ সেকেন্ড চেপে রাখুন</h3>
+                        <p>কেসের পেছনের ছোট বোতামটি ২০ সেকেন্ড টানা চেপে ধরে রাখুন। স্ট্যাটাস লাইটটি কমলা রঙে ৪ বার জ্বলে নীল রঙে ফ্ল্যাশ করা পর্যন্ত অপেক্ষা করুন।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">৩</div>
+                    <div class="step-details">
+                        <h3>Sony Headphones Connect অ্যাপ ব্যবহার করুন</h3>
+                        <p>ফোনে সনির অফিসিয়াল অ্যাপটি খুলে পেয়ারিং প্রসেস সফলভাবে সম্পন্ন করুন।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ৪. নাথিং ইয়ার গাইড -->
+        <div class="guide-panel" id="nothingGuide">
+            <div class="guide-panel-header">
+                <h2>Nothing Ear (1 & 2) পেয়ারিং রিসেট স্টেপ</h2>
+                <span class="guide-badge">সময় প্রয়োজন: মাত্র ৪৫ সেকেন্ড</span>
+            </div>
+            
+            <div class="guide-steps-timeline">
+                <div class="timeline-step">
+                    <div class="step-num-circle">১</div>
+                    <div class="step-details">
+                        <h3>বাড দুটি ট্রান্সপারেন্ট কেসে রাখুন</h3>
+                        <p>নতুন পার্টটি কেসে স্থাপন করে ৩০ মিনিট সাধারণ চার্জে রেখে দিন।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">২</div>
+                    <div class="step-details">
+                        <h3>কেসের পাশের বাটনটি ১০ সেকেন্ড চেপে ধরে রাখুন</h3>
+                        <p>কেস খোলা অবস্থায় কেসের সাইডের বাটনটি ১০ সেকেন্ড চেপে রাখুন। ইন্ডিকেটর লাইটটি লাল হয়ে এরপর সাদা রঙে ব্লিঙ্ক করবে।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">৩</div>
+                    <div class="step-details">
+                        <h3>Nothing X অ্যাপ দিয়ে পেয়ার সম্পন্ন করুন</h3>
+                        <p>Nothing X অ্যাপ ওপেন করে নতুন ডিভাইস জোড়াটি স্ক্যান করে কানেক্ট করুন।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ৫. ওয়ানপ্লাস বাডস গাইড -->
+        <div class="guide-panel" id="oneplusGuide">
+            <div class="guide-panel-header">
+                <h2>OnePlus Buds Pro 2 / Nord Buds পেয়ারিং স্টেপ</h2>
+                <span class="guide-badge">সময় প্রয়োজন: মাত্র ৬০ সেকেন্ড</span>
+            </div>
+            
+            <div class="guide-steps-timeline">
+                <div class="timeline-step">
+                    <div class="step-num-circle">১</div>
+                    <div class="step-details">
+                        <h3>উভয় বাড কেসে রাখুন এবং ঢাকনা খোলা রাখুন</h3>
+                        <p>উভয় বাড কেসে রেখে কেসের অভ্যন্তরীণ পেয়ার বোতামটি খুঁজুন।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">২</div>
+                    <div class="step-details">
+                        <h3>অভ্যন্তরীণ বাটনটি ১০ সেকেন্ড চেপে ধরে রাখুন</h3>
+                        <p>কেসের ভেতরের বাটনটি ১০ সেকেন্ড চেপে ধরে রাখুন যতক্ষণ না এলইডি আলো সাদা রঙে ব্লিঙ্ক করতে শুরু করে।</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="step-num-circle">৩</div>
+                    <div class="step-details">
+                        <h3>ফোনে ব্লুটুথ স্ক্যান করে কানেক্ট করুন</h3>
+                        <p>ফোনের ব্লুটুথ লিস্টে আপনার OnePlus মডেলটি সিলেক্ট করে কানেক্ট করে নিন।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- কোনো সমস্যা হলে সাপোর্ট নেওয়ার বক্স -->
+    <div class="guide-help-card text-center">
+        <h3>এখনও কোনো সমস্যা হচ্ছে?</h3>
+        <p>আমাদের টেকনিক্যাল সাপোর্ট টিম আপনাকে বিনামূল্যে ধাপে ধাপে পেয়ার করতে সহায়তা করবে।</p>
+        <a href="{{ url_for('help_request') }}" class="btn btn-primary btn-large">
+            টেকনিক্যাল সাপোর্ট রিকোয়েস্ট পাঠান <span>→</span>
+        </a>
+    </div>
+
+</div>
+
+<script>
+    // এই ফাংশনটি পেয়ারিং গাইডের ব্র্যান্ড ভিত্তিক ট্যাব সুইচ করার কাজ করে
+    function showGuideTab(brand, btn) {
+        // সব বাটন থেকে active ক্লাস সরানো
+        document.querySelectorAll('.guide-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // সব প্যানেল হাইড করা
+        document.querySelectorAll('.guide-panel').forEach(p => p.classList.remove('active'));
+
+        // নির্বাচিত প্যানেলটি শো করা
+        const target = document.getElementById(brand + 'Guide');
+        if (target) {
+            target.classList.add('active');
+        }
+    }
+</script>
+{% endblock %}

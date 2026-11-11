@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+<!-- =============================================================================
+     প্রজেক্ট নাম: BudsRecover (ইয়ারবাড রিপ্লেসমেন্ট ই-কমার্স প্ল্যাটফর্ম)
+     ফাইল: templates/support.html
+     বিবরণ: গ্রাহকদের সাপোর্ট ও মডেল ম্যাচিং রিকোয়েস্ট দেখার এডমিন ইনবক্স।
+     গ্রুপ প্রজেক্টের সুবিধার জন্য প্রতিটি সেকশন ও বাটনে বিস্তারিত বাংলা কমেন্ট রয়েছে।
+============================================================================= -->
+
+{% block title %}সাপোর্ট রিকোয়েস্ট ইনবক্স — BudsRecover Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-wrap">
+    
+    <div class="admin-header-flex">
+        <div>
+            <a href="{{ url_for('admin_dashboard') }}" class="back-nav-link">← ড্যাশবোর্ডে ফিরে যান</a>
+            <h1 class="page-title">গ্রাহকদের মডেল হেল্প ইনবক্স ({{ requests_list|length }} টি)</h1>
+        </div>
+    </div>
+
+    {% if not requests_list %}
+    <div class="empty-orders-box">
+        <div class="empty-icon">💬</div>
+        <h2>বর্তমানে কোনো নতুন সাপোর্ট রিকোয়েস্ট নেই</h2>
+    </div>
+    {% else %}
+    <div class="dashboard-card full-width">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>আইডি</th>
+                        <th>গ্রাহকের নাম ও ফোন</th>
+                        <th>ব্র্যান্ড ও মডেল</th>
+                        <th>হারানো পার্ট</th>
+                        <th>গ্রাহকের মেসেজ</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in requests_list %}
+                    <tr>
+                        <td>#{{ req.id }}</td>
+                        <td>
+                            <strong>{{ req.name }}</strong>
+                            <br><small>{{ req.phone }}</small>
+                            {% if req.email %}<br><small class="text-muted">{{ req.email }}</small>{% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ req.brand }}</strong>
+                            <br><small>{{ req.model }}</small>
+                        </td>
+                        <td><span class="badge part-badge mini">{{ req.missing_part }}</span></td>
+                        <td><p class="support-message-text">{{ req.message }}</p></td>
+                        <td>
+                            <span class="status-badge {% if req.status == 'Resolved' %}status-delivered{% else %}status-pending{% endif %} mini">
+                                {{ req.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if req.status != 'Resolved' %}
+                            <!-- রিকোয়েস্ট সমাধান হিসেবে মার্ক করার ফর্ম বাটন -->
+                            <form method="POST" action="{{ url_for('admin_resolve_support', s_id=req.id) }}">
+                                <button type="submit" class="btn btn-secondary btn-mini">
+                                    ✓ সমাধান চিহ্নিত করুন
+                                </button>
+                            </form>
+                            {% else %}
+                            <small class="text-success">সমাধান সম্পন্ন</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
